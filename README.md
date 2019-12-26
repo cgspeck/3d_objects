@@ -4,13 +4,14 @@ Repository of random designs which I would normally post to [Thingiverse](https:
 
 *Why?*
 
-Thingiverse has been very unreliable of late, and I need a quick, convienent, reliable and off-site way of backing up and publishing my original 3D designs.
+Thingiverse has been very unreliable of late, and I need a quick, convenient, reliable and off-site way of backing up and publishing my original 3D designs.
 
 Also, a git repo naturally affords version tracking, which is quite useful when you can treat real objects as code.
 
 ## Index of Objects
 
 [PCB Holder v2](pcb-holder-v2/README.md)
+[Fence Post Caps](fence-post-caps/README.md)
 
 ## License
 
