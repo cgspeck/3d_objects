@@ -10,8 +10,9 @@ Also, a git repo naturally affords version tracking, which is quite useful when 
 
 ## Index of Objects
 
-[PCB Holder v2](pcb-holder-v2/README.md)
-[Fence Post Caps](fence-post-caps/README.md)
+* [PCB Holder v2](pcb-holder-v2/README.md)
+* [Fence Post Caps](fence-post-caps/README.md)
+* [Pool Brace Caps](pool-brace-cap/README.md)
 
 ## License
 
