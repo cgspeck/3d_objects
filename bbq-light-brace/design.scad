@@ -33,7 +33,7 @@ difference() {
     union() {
         hull() {
             cylinder_outer(total_z, max_or);
-            translate([-lower_screw_diameter / 2, -max_or - ziptie_xy * 2, 0]) cube([lower_screw_diameter, ziptie_xy * 2, total_z]);
+            #translate([-lower_screw_diameter / 2, -max_or - ziptie_xy * 3, 0]) cube([2min_thickness * 3, ziptie_xy * 2, total_z]);
         }
     }
     // lower section
