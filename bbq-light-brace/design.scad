@@ -16,7 +16,7 @@ upper_section_z=lower_section_z * 3;
 max_or=max(upper_section_id / 2, lower_section_id / 2) + 2min_thickness;
 
 ziptie_xy=2;
-ziptie_z=3;
+ziptie_z=3 + 1; // give a little wriggle room
 
 module cylinder_outer(height,radius,center=false){
     fudge = 1/cos(180/fn);
@@ -29,11 +29,18 @@ module ZipTieCutThrough() {
     translate([-max_or, -max_or - 2min_thickness, 0]) cube([max_or * 2, ziptie_xy, ziptie_z]);
 }
 
+module CircularZipTieCutThrough(radius=max_or + 2min_thickness) {
+    translate([0, 0, 0]) difference() {
+        cylinder_outer(ziptie_z, radius);
+        cylinder_outer(ziptie_z, radius - ziptie_xy);
+    }
+}
+
 difference() {
     union() {
         hull() {
             cylinder_outer(total_z, max_or);
-            #translate([-lower_screw_diameter / 2, -max_or - ziptie_xy * 3, 0]) cube([2min_thickness * 3, ziptie_xy * 2, total_z]);
+            translate([-lower_screw_diameter / 2, -max_or - ziptie_xy * 3, 0]) cube([2min_thickness * 3, ziptie_xy * 2, total_z]);
         }
     }
     // lower section
@@ -45,13 +52,13 @@ difference() {
 
     translate([-max_or - .5, 0, 0]) cube([max_or * 2 + 1, max_or + 1, total_z]);
 
-    translate([0, 0, 2min_thickness]) ZipTieCutThrough();
+    translate([0, 0, 2min_thickness]) CircularZipTieCutThrough();
 
-    translate([0, 0, lower_section_z - ziptie_z - 2min_thickness]) ZipTieCutThrough();
+    translate([0, 0, lower_section_z - ziptie_z - 2min_thickness]) CircularZipTieCutThrough();
 
-    translate([0, 0, lower_section_z + 2min_thickness]) ZipTieCutThrough();
+    translate([0, 0, lower_section_z + 2min_thickness]) CircularZipTieCutThrough();
 
-    translate([0, 0, total_z - ziptie_z - 2min_thickness]) ZipTieCutThrough();
+    translate([0, 0, total_z - ziptie_z - 2min_thickness]) CircularZipTieCutThrough();
 
-    translate([0, 0, lower_section_z + (upper_section_z / 2) - ziptie_z]) ZipTieCutThrough();
+    translate([0, 0, lower_section_z + (upper_section_z / 2) - ziptie_z]) CircularZipTieCutThrough();
 }
