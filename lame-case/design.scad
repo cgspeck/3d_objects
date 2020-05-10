@@ -37,8 +37,8 @@ box_top_external_dimension=[
 ];
 
 lip_internal_dimension=[
-    box_top_external_dimension.x + 2clearance_tight,
-    box_top_external_dimension.y + 2clearance_tight,
+    box_top_external_dimension.x,
+    box_top_external_dimension.y,
     lip_height
 ];
 
