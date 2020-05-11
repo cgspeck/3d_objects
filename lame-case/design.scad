@@ -1,7 +1,7 @@
 include <MCAD/boxes.scad>
 
 box_bottom_internal_dimensions=[
-    190,
+    200,
     34,
     34
 ];
