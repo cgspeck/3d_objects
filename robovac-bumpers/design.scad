@@ -12,7 +12,7 @@ foot_dia=29.10;
 foot_len=35;
 foot_clip_percentage=0.50;
 
-leg_clip_percentage=0.75;
+leg_clip_percentage=0.70;
 // leg_radius=leg_diameter/2;
 i=0;
 
@@ -84,7 +84,7 @@ module OuterShell() {
 outer_shell_tran=[
     0,
     (foot_len - leg_len) / 2,
-    -(outer_shell_z / 2) + foot_dia / 2
+    -(outer_shell_z / 2) + foot_dia / 2 - 0.5
 ];
 
 translate(outer_shell_tran) OuterShell();
