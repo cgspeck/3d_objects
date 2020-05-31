@@ -63,7 +63,7 @@ box_d=[
 box_tran=[
     0,
     0,
-    -actual_castor_wheel_rad - 2min_thickness //-(box_z/2) - actual_castor_wheel_rad + holder_depth
+    -2min_thickness //-(box_z/2) - actual_castor_wheel_rad + holder_depth
 ];
 
 wheel_translation=[
@@ -75,15 +75,15 @@ wheel_translation=[
 echo(screw_z_offset);
 
 difference() {
-    translate(box_tran) cylinder_outer(box_d.z, box_d.x / 2);
-    translate(wheel_translation) sphere(actual_castor_wheel_rad);
+    translate(box_tran) cylinder_outer(box_d.z, actual_castor_wheel_rad * 1.6);
+    translate(wheel_translation) cone_outer(actual_castor_wheel_rad, actual_castor_wheel_rad, actual_castor_wheel_width);
 
     translate([
         0,
         0,
-        -(box_z) - actual_castor_wheel_rad + holder_depth
+        0
     ]) {
-        screw_x_trans=25;
+        screw_x_trans=43;
         translate([screw_x_trans, 0, 0]) CounterSunkScrew();
         translate([-screw_x_trans, 0, 0]) CounterSunkScrew();
     }
