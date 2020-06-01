@@ -19,7 +19,7 @@ mdf_sheet_thickness=18;
 screw_z_offset=screw_len - mdf_sheet_thickness - 0.5;
 
 screw_dia=4.88;
-screw_cs_head_w=7.3;
+screw_cs_head_w=7.4;
 screw_cs_len=2.3;
 
 fn=72*4;

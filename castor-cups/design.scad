@@ -19,7 +19,7 @@ mdf_sheet_thickness=18;
 screw_z_offset=screw_len - mdf_sheet_thickness - 0.5;
 
 screw_dia=4.88;
-screw_cs_head_w=7.3;
+screw_cs_head_w=7.4;
 screw_cs_len=2.3;
 
 fn=72*4;
@@ -83,7 +83,7 @@ difference() {
         0,
         -(box_z) - actual_castor_wheel_rad + holder_depth
     ]) {
-        screw_x_trans=25;
+        screw_x_trans=25.9;
         translate([screw_x_trans, 0, 0]) CounterSunkScrew();
         translate([-screw_x_trans, 0, 0]) CounterSunkScrew();
     }
