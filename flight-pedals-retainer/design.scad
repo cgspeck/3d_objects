@@ -49,7 +49,7 @@ module CounterSunkScrew() {
 }
 
 front_x=150;
-rear_x=225;
+rear_x=219;
 box_y=65;
 box_z=20;
 radius=4;
