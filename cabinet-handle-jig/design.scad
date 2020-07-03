@@ -10,11 +10,11 @@ module cylinder_outer(height,radius,fn=fn) {
    cylinder(h=height,r=radius*fudge,$fn=fn);
 }
 
-hole_size=2 + clearance_loose;
+hole_size=4 + (clearance_loose * 2);
 
 handle_hole_spacing=5 * 25.4; // apparently 5"
 
-jig_w=4 * 25.4;
+jig_w=handle_hole_spacing * 1.5;
 jig_z=5;
 draw_height=177;
 
