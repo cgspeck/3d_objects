@@ -63,7 +63,9 @@ box_tran = [
     box_z / 2
 ];
 
-difference() {
+wedge_width=16;
+
+module WedgeShape() {
     translate(box_tran) {
         hull() {
             roundedBox(front_dim, radius, true);
@@ -74,10 +76,12 @@ difference() {
             ]) roundedBox(rear_dim, radius, true);
         }
     }
+}
 
+module ScrewHoles() {
     translate([
         0,
-        box_y / 2,
+        wedge_width/2,
         0
     ]) {
         screw_x_trans=60;
@@ -85,4 +89,15 @@ difference() {
         translate([0, 0, 0]) CounterSunkScrew();
         translate([-screw_x_trans, 0, 0]) CounterSunkScrew();
     }
+}
+
+difference() {
+    WedgeShape();
+    translate([
+        0,
+        wedge_width,
+        0
+    ]) WedgeShape();
+
+    ScrewHoles();
 }
