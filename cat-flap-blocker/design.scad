@@ -53,22 +53,31 @@ module _mountPlate(post_fixing_side="left", solid=false) {
             translate([post_fixing_x_trans, post_fixing_lower_y_trans, 0]) cube(size=post_fixing_dim, center=false);
         }
 
+        hull() {
+            translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
+            translate([post_fixing_x_trans, 0, 0]) cube(size=post_fixing_dim, center=false);
+        }
+
         // guides
         guide_base_x_tran = (post_fixing_side=="left") ? 0 : plate_dim.x - post_fixing_dim.x;
         guide_dim=[guide_thickness, post_fixing_dim.y, guide_depth];
         // first
-        translate([guide_base_x_tran, 0, cat_flap_frame_protrusion]) cube(guide_dim);
-        // second
-        translate([guide_base_x_tran + post_fixing_dim.x - guide_dim.x, 0, cat_flap_frame_protrusion]) cube(guide_dim);
+        if (post_fixing_side=="left") {
+            translate([guide_base_x_tran, 0, cat_flap_frame_protrusion]) cube(guide_dim);
+        } else {
+            // second
+            translate([guide_base_x_tran + post_fixing_dim.x - guide_dim.x, 0, cat_flap_frame_protrusion]) cube(guide_dim);
+        }
+
+
 
     } else {
         plate_fixing_x_trans = (post_fixing_side == "left") ? (post_fixing_dim.x) + plate_fixing_head_diameter : plate_fixing_head_diameter;
         translate([plate_fixing_x_trans, plate_dim.y / 2, 0]) cylinder_outer(plate_thickness, (plate_fixing_diameter / 2) + clearance_loose * 2);
 
         post_fixing_x_trans = (post_fixing_side == "left") ? post_fixing_dim.x / 2 : (plate_dim.x - post_fixing_dim.x / 2);
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_thickness]) cylinder_outer(cat_flap_frame_protrusion - plate_thickness, (post_fixing_diameter / 2) + clearance_loose * 2);
-
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_thickness]) scale([1, 1, 26]) nutHole(post_fixing_diameter, tolerance=0.1);
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, 0]) cylinder_outer(cat_flap_frame_protrusion, (post_fixing_diameter / 2) + clearance_loose * 2);
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, 0]) scale([1, 1, 26.5]) nutHole(post_fixing_diameter);
     }
 }
 
