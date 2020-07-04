@@ -46,14 +46,11 @@ module _mountPlate(post_fixing_side="left", solid=false) {
         cube(plate_dim);
 
         post_fixing_x_trans = (post_fixing_side == "left") ? 0 : (plate_dim.x - post_fixing_dim.x);
+        post_fixing_lower_y_trans = plate_dim.y - post_fixing_dim.y;
 
         hull() {
             translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
-            translate([post_fixing_x_trans, 0, 0]) cube(size=[
-                post_fixing_dim.x,
-                plate_dim.y,
-                plate_dim.z
-            ], center=false);
+            translate([post_fixing_x_trans, post_fixing_lower_y_trans, 0]) cube(size=post_fixing_dim, center=false);
         }
 
         // guides
@@ -69,9 +66,9 @@ module _mountPlate(post_fixing_side="left", solid=false) {
         translate([plate_fixing_x_trans, plate_dim.y / 2, 0]) cylinder_outer(plate_thickness, (plate_fixing_diameter / 2) + clearance_loose * 2);
 
         post_fixing_x_trans = (post_fixing_side == "left") ? post_fixing_dim.x / 2 : (plate_dim.x - post_fixing_dim.x / 2);
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, 0]) cylinder_outer(cat_flap_frame_protrusion, (post_fixing_diameter / 2) + clearance_loose * 2);
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_thickness]) cylinder_outer(cat_flap_frame_protrusion - plate_thickness, (post_fixing_diameter / 2) + clearance_loose * 2);
 
-        #translate([post_fixing_x_trans, post_fixing_dim.y / 2, 0]) scale([1, 1, 27.5]) nutHole(post_fixing_diameter);
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_thickness]) scale([1, 1, 26]) nutHole(post_fixing_diameter, tolerance=0.1);
     }
 }
 
