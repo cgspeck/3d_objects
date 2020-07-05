@@ -3,7 +3,7 @@ include <MCAD/nuts_and_bolts.scad>
 cat_flap_frame_protrusion=70;
 post_width=16.16;
 
-plate_fixing_diameter=3.8;
+plate_fixing_diameter=3.9;
 plate_fixing_head_diameter=9;
 
 plate_thickness=2.4;
@@ -101,15 +101,15 @@ module _mountPlate(post_fixing_side="left", solid=false) {
     } else {
         plate_fixing_x_trans = post_fixing_dim.x / 2;
         // attachment to wall fixing
-        translate([plate_fixing_x_trans, plate_dim.y / 2, 0]) cylinder_outer(plate_thickness, (plate_fixing_diameter / 2) + clearance_loose * 2);
+        translate([plate_fixing_x_trans, plate_dim.y / 2, 0]) cylinder_outer(plate_thickness, (plate_fixing_diameter / 2) + clearance_loose);
         // access for screw driver
-        translate([plate_fixing_x_trans, plate_dim.y / 2, 20]) cylinder_outer(40, (6.5 / 2) + clearance_loose * 2);
+        translate([plate_fixing_x_trans, plate_dim.y / 2, 20]) cylinder_outer(40, (6.7 / 2) + clearance_loose);
 
         post_fixing_x_trans = (post_fixing_side == "left") ? post_fixing_dim.x / 2 : (plate_dim.x - post_fixing_dim.x / 2);
         // m3 bolt hole
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_dim.z]) cylinder_outer(cat_flap_frame_protrusion, (post_fixing_diameter / 2) + clearance_loose * 2);
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_dim.z]) cylinder_outer(cat_flap_frame_protrusion, (post_fixing_diameter / 2) + clearance_loose);
         // m3 nut holder
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, cat_flap_frame_protrusion - 5]) scale([1, 1, 1]) nutHole(post_fixing_diameter);
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, cat_flap_frame_protrusion - 5]) nutHole(post_fixing_diameter);
     }
 }
 
