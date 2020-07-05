@@ -3,7 +3,7 @@ include <MCAD/nuts_and_bolts.scad>
 cat_flap_frame_protrusion=70;
 post_width=16.16;
 
-plate_fixing_diameter=3.9;
+plate_fixing_diameter=3.8;
 plate_fixing_head_diameter=9;
 
 plate_thickness=2.4;
@@ -27,17 +27,27 @@ module cylinder_outer(height,radius,fn=fn) {
    cylinder(h=height,r=radius*fudge,$fn=fn);
 }
 // calc
+post_fixing_dim = [
+    (guide_thickness * 2) + (clearance_loose * 2) + post_width,
+    3 * post_fixing_nut_width,
+    guide_thickness,
+];
 
 plate_dim = [
-    (plate_fixing_head_diameter * 2) + (guide_thickness * 2) + post_width,
+    post_fixing_dim.x,
     cat_flap_frame_protrusion + 2 * post_fixing_nut_width,
     plate_thickness
 ];
 
-post_fixing_dim = [
-    (guide_thickness * 2) + (clearance_loose * 2) + post_width,
-    2 * post_fixing_nut_width,
-    guide_thickness,
+
+
+
+strut_pad_dim=[post_fixing_dim.x, 2.4, 1.2];
+
+post_fixing_dim_2= [
+    post_fixing_dim.x,
+    post_fixing_dim.y,
+    5
 ];
 
 
@@ -46,17 +56,34 @@ module _mountPlate(post_fixing_side="left", solid=false) {
         cube(plate_dim);
 
         post_fixing_x_trans = (post_fixing_side == "left") ? 0 : (plate_dim.x - post_fixing_dim.x);
+        post_fixing_z_trans = max(0, plate_dim.z - post_fixing_dim.z);
         post_fixing_lower_y_trans = plate_dim.y - post_fixing_dim.y;
+        strut_fixing_lower_y_trans = plate_dim.y - strut_pad_dim.y;
+
+        // hull() {
+        //     translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
+        //     translate([post_fixing_x_trans, post_fixing_lower_y_trans, post_fixing_z_trans]) cube(size=post_fixing_dim, center=false);
+        // }
 
         hull() {
-            translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
-            translate([post_fixing_x_trans, post_fixing_lower_y_trans, 0]) cube(size=post_fixing_dim, center=false);
+            translate([post_fixing_x_trans, post_fixing_dim.y - strut_pad_dim.y, cat_flap_frame_protrusion - strut_pad_dim.z]) cube(size=strut_pad_dim, center=false);
+            translate([post_fixing_x_trans, strut_fixing_lower_y_trans, post_fixing_z_trans]) cube(size=strut_pad_dim, center=false);
         }
 
         hull() {
-            translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
-            translate([post_fixing_x_trans, 0, 0]) cube(size=post_fixing_dim, center=false);
+            translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - strut_pad_dim.z]) cube(size=strut_pad_dim, center=false);
+            translate([post_fixing_x_trans, 0, post_fixing_z_trans]) cube(size=strut_pad_dim, center=false);
         }
+
+        hull() {
+            translate([post_fixing_x_trans, post_fixing_dim.y - strut_pad_dim.y, cat_flap_frame_protrusion - post_fixing_dim_2.z]) cube(size=[strut_pad_dim.x, strut_pad_dim.y, post_fixing_dim_2.z], center=false);
+            translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim_2.z]) cube(size=[strut_pad_dim.x, strut_pad_dim.y, post_fixing_dim_2.z], center=false);
+        }
+
+        // hull() {
+        //     translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
+        //     translate([post_fixing_x_trans, 0, 0]) cube(size=post_fixing_dim, center=false);
+        // }
 
         // guides
         guide_base_x_tran = (post_fixing_side=="left") ? 0 : plate_dim.x - post_fixing_dim.x;
@@ -72,12 +99,17 @@ module _mountPlate(post_fixing_side="left", solid=false) {
 
 
     } else {
-        plate_fixing_x_trans = (post_fixing_side == "left") ? (post_fixing_dim.x) + plate_fixing_head_diameter : plate_fixing_head_diameter;
+        plate_fixing_x_trans = post_fixing_dim.x / 2;
+        // attachment to wall fixing
         translate([plate_fixing_x_trans, plate_dim.y / 2, 0]) cylinder_outer(plate_thickness, (plate_fixing_diameter / 2) + clearance_loose * 2);
+        // access for screw driver
+        translate([plate_fixing_x_trans, plate_dim.y / 2, 20]) cylinder_outer(40, (6.5 / 2) + clearance_loose * 2);
 
         post_fixing_x_trans = (post_fixing_side == "left") ? post_fixing_dim.x / 2 : (plate_dim.x - post_fixing_dim.x / 2);
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, 0]) cylinder_outer(cat_flap_frame_protrusion, (post_fixing_diameter / 2) + clearance_loose * 2);
-        translate([post_fixing_x_trans, post_fixing_dim.y / 2, 0]) scale([1, 1, 26.5]) nutHole(post_fixing_diameter);
+        // m3 bolt hole
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, plate_dim.z]) cylinder_outer(cat_flap_frame_protrusion, (post_fixing_diameter / 2) + clearance_loose * 2);
+        // m3 nut holder
+        translate([post_fixing_x_trans, post_fixing_dim.y / 2, cat_flap_frame_protrusion - 5]) scale([1, 1, 1]) nutHole(post_fixing_diameter);
     }
 }
 
