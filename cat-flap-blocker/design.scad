@@ -60,13 +60,9 @@ module _mountPlate(post_fixing_side="left", solid=false) {
         post_fixing_lower_y_trans = plate_dim.y - post_fixing_dim.y;
         strut_fixing_lower_y_trans = plate_dim.y - strut_pad_dim.y;
 
-        // hull() {
-        //     translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
-        //     translate([post_fixing_x_trans, post_fixing_lower_y_trans, post_fixing_z_trans]) cube(size=post_fixing_dim, center=false);
-        // }
-
         hull() {
-            translate([post_fixing_x_trans, post_fixing_dim.y - strut_pad_dim.y, cat_flap_frame_protrusion - strut_pad_dim.z]) cube(size=strut_pad_dim, center=false);
+            offset=1.3;
+            translate([post_fixing_x_trans, post_fixing_dim.y - strut_pad_dim.y, cat_flap_frame_protrusion - strut_pad_dim.z - offset]) cube(size=[strut_pad_dim.x, strut_pad_dim.y, strut_pad_dim.z + offset], center=false);
             translate([post_fixing_x_trans, strut_fixing_lower_y_trans, post_fixing_z_trans]) cube(size=strut_pad_dim, center=false);
         }
 
@@ -79,11 +75,6 @@ module _mountPlate(post_fixing_side="left", solid=false) {
             translate([post_fixing_x_trans, post_fixing_dim.y - strut_pad_dim.y, cat_flap_frame_protrusion - post_fixing_dim_2.z]) cube(size=[strut_pad_dim.x, strut_pad_dim.y, post_fixing_dim_2.z], center=false);
             translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim_2.z]) cube(size=[strut_pad_dim.x, strut_pad_dim.y, post_fixing_dim_2.z], center=false);
         }
-
-        // hull() {
-        //     translate([post_fixing_x_trans, 0, cat_flap_frame_protrusion - post_fixing_dim.z]) cube(size=post_fixing_dim, center=false);
-        //     translate([post_fixing_x_trans, 0, 0]) cube(size=post_fixing_dim, center=false);
-        // }
 
         // guides
         guide_base_x_tran = (post_fixing_side=="left") ? 0 : plate_dim.x - post_fixing_dim.x;
