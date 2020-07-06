@@ -50,6 +50,18 @@ post_fixing_dim_2= [
     5
 ];
 
+module _jig(solid=false) {
+    if (solid) {
+        cube(plate_dim);
+    } else {
+        plate_fixing_x_trans = post_fixing_dim.x / 2;
+        // attachment to wall fixing
+        translate([plate_fixing_x_trans, plate_dim.y / 2, 0]) cylinder_outer(plate_thickness, (plate_fixing_diameter / 2) + clearance_loose);
+        // m3 nut holder
+        translate([post_fixing_dim.x / 2, post_fixing_dim.y / 2, 0]) nutHole(post_fixing_diameter);
+    }
+}
+
 
 module _mountPlate(post_fixing_side="left", solid=false) {
     if (solid) {
@@ -113,6 +125,16 @@ module MountPlate(post_fixing_side="left") {
 }
 
 
+module Jig() {
+    difference() {
+        _jig(true);
+        _jig(false);
+    }
+}
+
+
 MountPlate();
 
 translate([40, 0, 0]) MountPlate("right");
+
+translate([80, 0, 0]) Jig();
