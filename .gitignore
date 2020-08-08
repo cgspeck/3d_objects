@@ -1,3 +1,6 @@
 *.3mf
 *.stl
 *.gcode
+.DS_Store
+*.swp
+
