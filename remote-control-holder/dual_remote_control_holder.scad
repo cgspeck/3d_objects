@@ -16,20 +16,20 @@ Licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
 
 use <MCAD/boxes.scad>;
 
-device_thickness = 13;
-device1_width = 35;
-device2_width = 50;
+device_thickness = 28;
+device1_width = 47;
+device2_width = 51;
 clearance_width = 2;
 clearance_thickness = 1;
 // Suggest you keep this to less then 50% of device's height
-tray_height = 65;
+tray_height = 87;
 
 front_cutout1_width = (device1_width / 3) * 2;
 front_cutout2_width = (device2_width / 3) * 2;
 front_lip_height = 10;
 
-bottom_cutout1_width = device1_width / 2;
-bottom_cutout2_width = device2_width / 2;
+bottom_cutout1_width = 0; // device1_width / 2;
+bottom_cutout2_width = 0; // device2_width / 2;
 
 
 /* [Advanced] */
@@ -38,7 +38,7 @@ screw_head_thickness = 5;
 screw_diameter = 5;
 // How many mm from top to have first screw hole
 screw_start = 15;
-screw_centers = 25;
+screw_centers = 50;
 outer_radius = 5;
 inner_radius = 0;
 
