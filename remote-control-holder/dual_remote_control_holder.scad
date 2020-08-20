@@ -17,7 +17,7 @@ Licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
 use <MCAD/boxes.scad>;
 
 device_thickness = 28;
-device1_width = 47;
+device1_width = 51;
 device2_width = 51;
 clearance_width = 2;
 clearance_thickness = 1;

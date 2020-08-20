@@ -1,8 +1,19 @@
 use <MCAD/boxes.scad>
 
-cards=2;
-card_thickness=0.15;
-z=cards * card_thickness;
+CARD_THICKNESS_MAP=[
+    -1,
+    -1,
+    0.3,
+    0.6,
+    1.0,
+    1.2,
+    1.7,
+    -1,
+    7
+];
+// suggested sizes: 2, 3, 4, 5, 6, 8
+cards=3;
+z=CARD_THICKNESS_MAP[cards];
 
 outer_dim=[175, 105, z];
 rad=10;
