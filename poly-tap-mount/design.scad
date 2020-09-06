@@ -1,4 +1,17 @@
 include <MCAD/nuts_and_bolts.scad>
+use <MCAD/boxes.scad>
+
+
+// Choose a font
+//
+// tank_water_font="Liberation Sans";
+// tank_water_baseline_font_size=20;
+//
+// OR
+use <font/nasalization rg.ttf>
+tank_water_font="Nasalization Rg";
+tank_water_baseline_font_size=15;
+// !!! download font from https://fontmeme.com/fonts/nasalization-font/ and place in ./font/ !!!
 
 min_thickness=2.4;
 2min_thickness=2*min_thickness;
@@ -35,6 +48,31 @@ echo("printed_part_thickness", printed_part_thickness, "mm");
 
 fn=72 * 3;
 $fn=fn;
+
+tank_water_str1="Tank";
+tank_water_str2="Water";
+tank_water_tran1=[0,43,printed_part_thickness - min_thickness];
+tank_water_tran2=[0,20,printed_part_thickness - min_thickness];
+
+text_height=min_thickness;
+text_halign="center";
+
+module TextPieces() {
+    translate(tank_water_tran1) linear_extrude(text_height) text(tank_water_str1, size=tank_water_baseline_font_size, halign=text_halign, font=tank_water_font);
+    translate(tank_water_tran2) linear_extrude(text_height) text(tank_water_str2, size=tank_water_baseline_font_size, halign=text_halign, font=tank_water_font);
+}
+
+
+text_area_base=[80, 50, 2min_thickness];
+text_area_tran=[
+    0,
+    text_area_base.y/2 + 15,
+    printed_part_thickness - text_area_base.z/2
+];
+
+module TextAreaBase() {
+    translate(text_area_tran) roundedBox(text_area_base, 3, true);
+}
 
 module cylinder_outer(height,radius,fn=fn){
    fudge = 1/cos(180/fn);
@@ -85,6 +123,7 @@ difference() {
         TopHole();
         SideHole();
         SideHole(side=1);
+        TextAreaBase();
     }
 
     TopHole(true);
@@ -92,6 +131,7 @@ difference() {
     SideHole(true, 1);
     BottomHole();
     BottomHole(1);
+    TextPieces();
 }
 
 
