@@ -9,10 +9,10 @@ CARD_THICKNESS_MAP=[
     1.2,
     1.7,
     -1,
-    7
+    2
 ];
-// suggested sizes: 2, 3, 4, 5, 6, 8
-cards=3;
+// supported sizes: 2, 3, 4, 5, 6, 8
+cards=8;
 z=CARD_THICKNESS_MAP[cards];
 
 outer_dim=[175, 105, z];
@@ -34,8 +34,8 @@ difference() {
     translate([
     -outer_dim.x / 2 + rad,
     outer_dim.y / 2 -text_size * 1.2,
-    0
-    ]) linear_extrude(z * 2) text(label, size=text_size);
+    (z / 2) - min(z/2, 0.3)
+    ]) linear_extrude(z) text(label, size=text_size);
 }
 
 
