@@ -3,7 +3,7 @@ $fn=fn;
 
 module cylinder_outer(height,radius,fn=fn) {
    fudge = 1/cos(180/fn);
-   cylinder(h=height,r=radius*fudge,$fn=fn); 
+   cylinder(h=height,r=radius*fudge,$fn=fn);
 }
 
 module cone_outer(height,radius1,radius2,fn=fn) {
@@ -22,12 +22,13 @@ screw_hole_dia=4.8;
 screw_countersink_height=3.5;
 screw_countersink_max_dia=8.2;
 
-holder_z=10;
 holder_half_x=(pipe_od / 2) + clearance_loose + min_thickness;
 
 // select 4.8mm 250mm zip ties
-zip_tie_width=4.8;
-zip_tie_thickness=1.8;
+zip_tie_width=4.8 + 1;
+zip_tie_thickness=1.8 + 0.5;
+
+holder_z=zip_tie_width * 2;
 
 module screwMount(side, pad_only=false) {
     mount_dim=[
@@ -55,7 +56,7 @@ module screwMount(side, pad_only=false) {
                 translate([0,0,-mount_dim.z / 2]) cone_outer(screw_countersink_height, (screw_countersink_max_dia + clearance_loose) / 2, (screw_hole_dia + clearance_loose) / 2);
             }
         }
-    }    
+    }
 }
 
 module _pipeCylinder(holder_z, pipe_od, holder_half_x) {
@@ -71,7 +72,7 @@ module pipeHolder(pipe_top_distance, pad_only=false, side=0) {
         -(pipe_od / 2 + clearance_loose + pipe_top_distance),
         0,
     ];
-    
+
     translate(holder_tran) {
         if (pad_only) {
             cube_dim=[
@@ -88,7 +89,7 @@ module pipeHolder(pipe_top_distance, pad_only=false, side=0) {
                 _pipeCylinder(holder_z, pipe_od, holder_half_x);
                 translate(cube_tran) cube(cube_dim, center=true);
             }
-            
+
         } else {
             difference() {
                 _pipeCylinder(holder_z, pipe_od, holder_half_x);
@@ -98,7 +99,7 @@ module pipeHolder(pipe_top_distance, pad_only=false, side=0) {
             }
         }
 
-        
+
     }
 }
 
@@ -135,10 +136,10 @@ module Hanger(pipe_top_distance) {
 
 distances=[
     48,
-    73,
+    // 73,
     99,
-    120,
-    210,
+    // 120,
+    // 210,
 ];
 
 for (i=[0:len(distances) - 1]) {
