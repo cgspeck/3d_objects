@@ -20,7 +20,7 @@ module cone_outer(height,radius1,radius2,fn=fn){
 
 module _hinge(shaft_rad, length, knuckles, mode, side,
     outer_rad, flatplate, clearance, nom_knuckle_x_dim,
-    countersunk_bolt
+    countersunk_bolt, embedded_nyloc_nut
     ) {
     knuckles_this_side = side == 1 ?
         ceil(knuckles / 2)
@@ -54,14 +54,19 @@ module _hinge(shaft_rad, length, knuckles, mode, side,
                 if (mode=="normal") {
                     rotate([0, 90, 0]) {
                         cylinder_mid(length, shaft_rad + clearance);
-                        //countersunk_bolt bolt if selected
+                        // countersunk_bolt bolt if selected
                         if (countersunk_bolt==true) {
                             cs_len=(shaft_rad * 2) * (2/3);
-                            echo("cs_len", cs_len);
                             // 5.75 over 3
                             cone_outer(cs_len, shaft_rad * 1.92 + clearance, shaft_rad + clearance);
                         }
-
+                        // embedded nut if selected
+                        if (embedded_nyloc_nut==true) {
+                            // 4mm deep for a 3 mm dia shaft
+                            embedded_len=(shaft_rad * 2) * 4/3;
+                            // echo(embedded_len);
+                            translate([0, 0, length - embedded_len]) scale([1, 1, 100]) nutHole(shaft_rad * 2);
+                        }
                     }
                 }
             }
@@ -103,7 +108,7 @@ module _hinge(shaft_rad, length, knuckles, mode, side,
 module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
     outer_dia=0, flatplate=false, clearance=0.4, punch_through=0,
     nut_hole=0, flip=false, nut_hole_depth_mult=1.5,
-    countersunk_bolt=false
+    countersunk_bolt=false, embedded_nyloc_nut=false
     ) {
     /*
     Valid modes:
@@ -127,7 +132,7 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
     nut_hole_depth_mult: in multiples of the standard metric nut thickness, how deep to make the nuthole
 
     */
-    echo(countersunk_bolt);
+    echo(embedded_nyloc_nut);
     shaft_rad = shaft_dia / 2;
     outer_rad = outer_dia == 0 ? shaft_rad * 2 : max(shaft_rad * 2, outer_dia / 2);
     nom_knuckle_x_dim = (length / knuckles) - clearance;
@@ -138,7 +143,7 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
         _hinge(
             shaft_rad, length, knuckles, mode, side,
             outer_rad, flatplate, clearance, nom_knuckle_x_dim,
-            countersunk_bolt
+            countersunk_bolt, embedded_nyloc_nut
         );
         if (nut_hole > 0) {
             scale([
@@ -161,7 +166,7 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
         ]) _hinge(
             shaft_rad, length, knuckles, mode, side,
             outer_rad, flatplate, clearance, nom_knuckle_x_dim,
-            countersunk_bolt
+            countersunk_bolt, embedded_nyloc_nut
         );
         translate([
             punch_through,
@@ -170,7 +175,7 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
         ]) _hinge(
             shaft_rad, length, knuckles, mode, side,
             outer_rad, flatplate, clearance, nom_knuckle_x_dim,
-            countersunk_bolt
+            countersunk_bolt, embedded_nyloc_nut
         );
     }
 }

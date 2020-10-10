@@ -51,7 +51,7 @@ hinge_outer_dia=METRIC_WASHER_OD[hinge_shaft_dia];
 plate_z=min_thickness + METRIC_NUT_THICKNESS[plate_fixing_size];
 plate_dim=[plate_x, plate_y, plate_z];
 
-module ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, side, clearance=0.4, countersunk_bolt=false) {
+module ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, side, clearance=0.4, countersunk_bolt=false, embedded_nyloc_nut=false) {
     hinge_trans=[plate_dim.x + hinge_shaft_dia, 0, 0];
     hinge_rot=[0, 0, 90];
     difference() {
@@ -70,10 +70,11 @@ module ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, 
         }
 
     }
-    translate(hinge_trans) rotate(hinge_rot) Hinge(hinge_shaft_dia, plate_y, hinge_knuckles, side=side, outer_dia=hinge_outer_dia, countersunk_bolt=countersunk_bolt);
+    translate(hinge_trans) rotate(hinge_rot) Hinge(hinge_shaft_dia, plate_y, hinge_knuckles, side=side, outer_dia=hinge_outer_dia, countersunk_bolt=countersunk_bolt, embedded_nyloc_nut=embedded_nyloc_nut);
 }
 
 countersunk_bolt=true;
-ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, 0, countersunk_bolt=countersunk_bolt);
+embedded_nyloc_nut=true;
+ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, 0, countersunk_bolt=countersunk_bolt, embedded_nyloc_nut=embedded_nyloc_nut);
 
 translate([plate_dim.x * 2.5, plate_dim.y, 0]) rotate([0, 0, 180]) ButtHinge(plate_dim, plate_fixing_size,  hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, 1);
