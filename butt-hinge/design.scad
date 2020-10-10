@@ -1,5 +1,5 @@
 include <MCAD/nuts_and_bolts.scad>
-
+use <hinge.scad>
 // from https://www.armstrongmetalcrafts.com/Reference/WasherSizes.aspx
 METRIC_WASHER_OD = [
     -1,
@@ -33,14 +33,12 @@ module cylinder_outer(height,radius,fn=fn){
    cylinder(h=height,r=radius*fudge,$fn=fn);
 }
 
-use <hinge.scad>
-
 min_thickness=1.2;
 
 // Metric bolt and nut used to attach the plate to your object
 plate_fixing_size=3;
 plate_x=20;
-plate_y=60;
+plate_y=30;
 plate_fixings_horiz=1;
 plate_fixings_vert=2;
 
@@ -53,7 +51,7 @@ hinge_outer_dia=METRIC_WASHER_OD[hinge_shaft_dia];
 plate_z=min_thickness + METRIC_NUT_THICKNESS[plate_fixing_size];
 plate_dim=[plate_x, plate_y, plate_z];
 
-module ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, side, clearance=0.4) {
+module ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, side, clearance=0.4, countersunk_bolt=false) {
     hinge_trans=[plate_dim.x + hinge_shaft_dia, 0, 0];
     hinge_rot=[0, 0, 90];
     difference() {
@@ -72,10 +70,10 @@ module ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, 
         }
 
     }
-    translate(hinge_trans) rotate(hinge_rot) Hinge(hinge_shaft_dia, plate_y, hinge_knuckles, side=side, outer_dia=hinge_outer_dia);
+    translate(hinge_trans) rotate(hinge_rot) Hinge(hinge_shaft_dia, plate_y, hinge_knuckles, side=side, outer_dia=hinge_outer_dia, countersunk_bolt=countersunk_bolt);
 }
 
-
-ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, 0);
+countersunk_bolt=true;
+ButtHinge(plate_dim, plate_fixing_size, hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, 0, countersunk_bolt=countersunk_bolt);
 
 translate([plate_dim.x * 2.5, plate_dim.y, 0]) rotate([0, 0, 180]) ButtHinge(plate_dim, plate_fixing_size,  hinge_shaft_dia, hinge_knuckles, hinge_outer_dia, 1);

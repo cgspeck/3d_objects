@@ -13,8 +13,15 @@ module cylinder_mid(height,radius,fn=fn){
    cylinder(h=height,r=radius*fudge,$fn=fn);
 }
 
+module cone_outer(height,radius1,radius2,fn=fn){
+   fudge = 1/cos(180/fn);
+   cylinder(h=height,r1=radius1*fudge,r2=radius2*fudge,$fn=fn);
+}
+
 module _hinge(shaft_rad, length, knuckles, mode, side,
-    outer_rad, flatplate, clearance, nom_knuckle_x_dim) {
+    outer_rad, flatplate, clearance, nom_knuckle_x_dim,
+    countersunk_bolt
+    ) {
     knuckles_this_side = side == 1 ?
         ceil(knuckles / 2)
         : floor(knuckles / 2);
@@ -47,9 +54,16 @@ module _hinge(shaft_rad, length, knuckles, mode, side,
                 if (mode=="normal") {
                     rotate([0, 90, 0]) {
                         cylinder_mid(length, shaft_rad + clearance);
+                        //countersunk_bolt bolt if selected
+                        if (countersunk_bolt==true) {
+                            cs_len=(shaft_rad * 2) * (2/3);
+                            echo("cs_len", cs_len);
+                            // 5.75 over 3
+                            cone_outer(cs_len, shaft_rad * 1.92 + clearance, shaft_rad + clearance);
+                        }
+
                     }
                 }
-
             }
         }
 
@@ -88,7 +102,8 @@ module _hinge(shaft_rad, length, knuckles, mode, side,
 
 module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
     outer_dia=0, flatplate=false, clearance=0.4, punch_through=0,
-    nut_hole=0, flip=false, nut_hole_depth_mult=1.5
+    nut_hole=0, flip=false, nut_hole_depth_mult=1.5,
+    countersunk_bolt=false
     ) {
     /*
     Valid modes:
@@ -112,6 +127,7 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
     nut_hole_depth_mult: in multiples of the standard metric nut thickness, how deep to make the nuthole
 
     */
+    echo(countersunk_bolt);
     shaft_rad = shaft_dia / 2;
     outer_rad = outer_dia == 0 ? shaft_rad * 2 : max(shaft_rad * 2, outer_dia / 2);
     nom_knuckle_x_dim = (length / knuckles) - clearance;
@@ -121,7 +137,8 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
     translate(hinge_trans) difference() {
         _hinge(
             shaft_rad, length, knuckles, mode, side,
-            outer_rad, flatplate, clearance, nom_knuckle_x_dim
+            outer_rad, flatplate, clearance, nom_knuckle_x_dim,
+            countersunk_bolt
         );
         if (nut_hole > 0) {
             scale([
@@ -143,7 +160,8 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
             0
         ]) _hinge(
             shaft_rad, length, knuckles, mode, side,
-            outer_rad, flatplate, clearance, nom_knuckle_x_dim
+            outer_rad, flatplate, clearance, nom_knuckle_x_dim,
+            countersunk_bolt
         );
         translate([
             punch_through,
@@ -151,12 +169,11 @@ module Hinge(shaft_dia, length, knuckles, mode="normal", side=0,
             0
         ]) _hinge(
             shaft_rad, length, knuckles, mode, side,
-            outer_rad, flatplate, clearance, nom_knuckle_x_dim
+            outer_rad, flatplate, clearance, nom_knuckle_x_dim,
+            countersunk_bolt
         );
     }
 }
-
-module HingePlug(shaft_dia) {}
 
 Hinge(3, 50, 5, side=0);
 
