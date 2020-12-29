@@ -82,7 +82,6 @@ module BasePart() {
     }
 }
 
-
 module LightPart() {
     hole_dia=4.2+clearance_loose;
     mount_dim=[
@@ -91,26 +90,25 @@ module LightPart() {
         2.4
     ];
     bracket_outer_dx=64;
-    bracket_inner_dx=58.5 - clearance_tight;
+    bracket_inner_dx=58.5;
     bracket_dy=30-2.5;
     cutout_dim=[
         bracket_outer_dx - bracket_inner_dx,
         bracket_dy,
         mount_dim.z
     ];
-    cutout_center_x=(bracket_inner_dx + bracket_outer_dx) / 2 / 2;
     CenteredJoint();
     difference() {
         roundedCube(mount_dim, 3, sidesonly=true, center=true);
         translate([
-            cutout_center_x,
+            (bracket_inner_dx / 2) - clearance_tight + cutout_dim.x / 2,
             (mount_dim.y - cutout_dim.y) / 2,
             0
         ]) {
             cube(cutout_dim, center=true);
         };
         translate([
-            -cutout_center_x,
+            -(bracket_inner_dx / 2) + clearance_tight - cutout_dim.x / 2,
             (mount_dim.y - cutout_dim.y) / 2,
             0
         ]) {
@@ -119,8 +117,45 @@ module LightPart() {
     }
 }
 
+solar_panel_y=68;
+
+module positioned_gutter_clip() {
+    translate([16, -solar_panel_y / 2, 5.7]) rotate([270,0,0]) linear_extrude(solar_panel_y) projection() import("lib/Gutter_Clip/files/Gutter_Clip_with_knob.stl");
+}
+
+module SolarPanelClip() {
+    panel_mount_dim=[49, solar_panel_y, 2.4];
+    hole_dia=3+clearance_loose;
+    hole_dx=27;
+    hole_dy=45;
+    difference() {
+        union() {
+            positioned_gutter_clip();
+            roundedCube(panel_mount_dim, 3, sidesonly=true, center=true);
+        }
+        translate([hole_dx / 2, 0, -panel_mount_dim.z / 2]) {
+            translate([0, hole_dy / 2, 0]) {
+                cylinder_outer(panel_mount_dim.z + 10, hole_dia/2);
+            }
+            translate([0, -hole_dy / 2, 0]) {
+                cylinder_outer(panel_mount_dim.z + 10, hole_dia/2);
+            }
+        }
+        translate([-hole_dx / 2, 0, -panel_mount_dim.z / 2]) {
+            translate([0, hole_dy / 2, 0]) {
+                cylinder_outer(panel_mount_dim.z, hole_dia/2);
+            }
+            translate([0, -hole_dy / 2, 0]) {
+                cylinder_outer(panel_mount_dim.z, hole_dia/2);
+            }
+        }
+    }
+}
+
 BasePart();
 
-translate([joint_len * 3, 0, 0]) JoinerPart();
+translate([80, 0, 0]) JoinerPart();
 
 translate([0, 50, 0]) LightPart();
+
+translate([80, 50, 0]) SolarPanelClip();
