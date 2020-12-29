@@ -21,5 +21,5 @@ module Bearing(od, id, z, outer_clearance=0, inner_clearance=0) {
 
 translate([0, 0, 8]) rotate([0, 180, 0]) difference() {
     Bearing(28, 12, 8, 0, clearance_loose);
-    Bearing(21, 12, 5, clearance_tight, clearance_loose);
+    Bearing(21, 12, 5, 0, clearance_loose);
 }
