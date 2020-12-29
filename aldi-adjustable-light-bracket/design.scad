@@ -152,6 +152,10 @@ module SolarPanelClip() {
     }
 }
 
+module OrdinaryGutterClip() {
+    import("lib/Gutter_Clip/files/Gutter_Clip_with_knob.stl");
+}
+
 BasePart();
 
 translate([80, 0, 0]) JoinerPart();
@@ -159,3 +163,7 @@ translate([80, 0, 0]) JoinerPart();
 translate([0, 50, 0]) LightPart();
 
 translate([80, 50, 0]) SolarPanelClip();
+
+translate([160, 0, 0]) OrdinaryGutterClip();
+
+translate([160, 50, 0]) OrdinaryGutterClip();
