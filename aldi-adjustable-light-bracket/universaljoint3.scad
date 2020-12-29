@@ -18,9 +18,9 @@ module sleeve(sleeve_dia,
         intersection(){
     //solid wing
             hull(){
-            cylinder(h=sleeve_dia, d=joint_dia, center=true, $fn=32);
-            translate([sleeve_dia, 0, 0])
-                cube([0.001, sleeve_dia, sleeve_dia], true);
+                cylinder(h=sleeve_dia, d=joint_dia, center=true, $fn=32);
+                translate([sleeve_dia, 0, 0])
+                    cube([0.001, sleeve_dia, sleeve_dia], true);
             }//h
             rotate([0, 90, 0])
             cylinder(h=sleeve_dia*2, d=sleeve_dia, center=true);
@@ -55,27 +55,27 @@ module UniversalJoint3(part=0, cl=0.4, joint_hole=3.4, joint_dia=10, joint_len=2
     joint_dia: outer diameter of joint[10];
     joint_len: length of the joint(hole to hole)[20]
 
-[shaft1]
-shaft_dia1: diameter of shaft1[8]
-sleeve_dia1: diameter of sleeve1[19]
-sleeve_len1: length of sleeve1[16]
+    [shaft1]
+    shaft_dia1: diameter of shaft1[8]
+    sleeve_dia1: diameter of sleeve1[19]
+    sleeve_len1: length of sleeve1[16]
 
-[shaft2]
-shaft_dia2: diameter of shaft2[12]
-sleeve_dia2: diameter of sleeve2[25]
-sleeve_len2: length of sleeve2[20]
+    [shaft2]
+    shaft_dia2: diameter of shaft2[12]
+    sleeve_dia2: diameter of sleeve2[25]
+    sleeve_len2: length of sleeve2[20]
 
-[fastener]
-fastener_hole: diameter of shaft's bolt[M3+tight tolerance=3.1] [2.8:0.1:4.5]
+    [fastener]
+    fastener_hole: diameter of shaft's bolt[M3+tight tolerance=3.1] [2.8:0.1:4.5]
 
-[rotation]
-//ry: y axis rotation [-45:1:45]
-//rz: z axis rotation [-45:1:45]
+    [rotation]
+    //ry: y axis rotation [-45:1:45]
+    //rz: z axis rotation [-45:1:45]
 
-[Hidden]
-//ep: remove difference effect[0.002]
-//sp: space between joint and sleeve
-*/
+    [Hidden]
+    //ep: remove difference effect[0.002]
+    //sp: space between joint and sleeve
+    */
     //// main
     if (part==0 || part==3){
     color("LightPink")

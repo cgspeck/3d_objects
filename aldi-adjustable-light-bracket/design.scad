@@ -1,3 +1,5 @@
+use <MCAD/boxes.scad>
+use <universaljoint3.scad>
 fn=72*4;
 $fn=fn;
 
@@ -9,17 +11,76 @@ module cylinder_mid(height,radius,fn=fn) {
    cylinder(h=height,r=radius*fudge,$fn=fn);
 }
 
-module Bearing(od, id, z, outer_clearance=0, inner_clearance=0) {
+module cylinder_outer(height,radius,fn=fn){
+   fudge = 1/cos(180/fn);
+   cylinder(h=height,r=radius*fudge,$fn=fn);
+}
+
+joint_hole=5 + clearance_loose;
+joint_dia=15;
+joint_len=20;
+shaft_dia=0;
+sleeve_dia=25;
+sleeve_len=16;
+
+fastener_hole=0;
+
+// UniversalJoint3(part=0, joint_hole=joint_hole, joint_dia=joint_dia, joint_len=joint_len, sleeve_dia1=sleeve_dia, sleeve_len1=sleeve_len, shaft_dia1=shaft_dia, sleeve_dia2=sleeve_dia, sleeve_len2=sleeve_len, shaft_dia2=shaft_dia, fastener_hole=fastener_hole, ry=0, rz=0);
+
+module CenteredJoint() {
+    translate([0,0,sleeve_dia]) UniversalJoint3(part=2, joint_hole=joint_hole, joint_dia=joint_dia, joint_len=0, sleeve_dia1=sleeve_dia, sleeve_len1=sleeve_len, shaft_dia1=shaft_dia, sleeve_dia2=sleeve_dia, sleeve_len2=sleeve_len, shaft_dia2=shaft_dia, fastener_hole=fastener_hole, ry=270, rz=0);
+}
+
+
+module BasePart() {
+    hole_dia=4.2+clearance_loose;
+    base_dim=[
+        50,
+        50,
+        2
+    ];
+    CenteredJoint();
     difference() {
-        cylinder_mid(z, (od / 2) + outer_clearance);
-        cylinder_mid(z, (id / 2) + inner_clearance);
+        roundedCube(base_dim, 3, sidesonly=true, center=true);
+        translate([
+            (base_dim.x / 2) - hole_dia * 1.5,
+            0,
+            - base_dim.z/2
+        ]) {
+            translate([
+                0,
+                - (base_dim.y / 2) + hole_dia * 1.5,
+                0
+            ]) cylinder_outer(base_dim.z, hole_dia/2);
+            translate([
+                0,
+                (base_dim.y / 2) - hole_dia * 1.5,
+                0
+            ]) cylinder_outer(base_dim.z, hole_dia/2);
+        };
+
+        translate([
+            -(base_dim.x / 2) + hole_dia * 1.5,
+            0,
+            - base_dim.z/2
+        ]) {
+            translate([
+                0,
+                - (base_dim.y / 2) + hole_dia * 1.5,
+                0
+            ]) cylinder_outer(base_dim.z, hole_dia/2);
+            translate([
+                0,
+                (base_dim.y / 2) - hole_dia * 1.5,
+                0
+            ]) cylinder_outer(base_dim.z, hole_dia/2);
+        }
+
+
+
+
+
     }
 }
 
-// 6801: 12x21x5
-// 6001: 12x28x8
-
-translate([0, 0, 8]) rotate([0, 180, 0]) difference() {
-    Bearing(28, 12, 8, 0, clearance_loose);
-    Bearing(21, 12, 5, 0, clearance_loose);
-}
+BasePart();
