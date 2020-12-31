@@ -135,10 +135,10 @@ module Hanger(pipe_top_distance) {
 }
 
 distances=[
-    48,
-    // 73,
-    99,
-    // 120,
+    // 48,
+    73,
+    // 99,
+    120,
     // 210,
 ];
 
