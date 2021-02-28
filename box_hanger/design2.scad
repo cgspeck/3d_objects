@@ -123,12 +123,16 @@ module Box(section="base") {
                     translate([std_thickness, std_thickness, std_thickness]) roundedCube(box_int_dimensions, r=1.5, sidesonly=true, center=false);
                     translate([box_ext_dimensions.x / 2, std_thickness + de_minimus, split_z]) rotate([90,0,0]) cylinder_outer(10, f_cutout_dia / 2);
                     translate([box_ext_dimensions.x / 2 - r_cutout_dim.x / 2, box_ext_dimensions.y - r_cutout_dim.y / 2, std_thickness + pcb_cyl_height]) roundedCube(r_cutout_dim, r=1.5, sidesonly=false, center=false);
+                    // pushfit tab cutouts
                     translate([0,0,push_fit_tab_z_tran]) {
                         translate([0,base_cube_dim.y / 4 - 5, 0]) cube([box_ext_dimensions.x,10,push_fit_tab_z_dim]);
                     }
                     translate([0,0,push_fit_tab_z_tran]) {
                         translate([0,base_cube_dim.y / 4 * 3 - 5, 0]) cube([box_ext_dimensions.x,10,push_fit_tab_z_dim]);
                     }
+                    // pushfit tab clearance
+                    translate([0,base_cube_dim.y / 4 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
+                    translate([0,base_cube_dim.y / 4 * 3 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
                 }
                 if (section=="base") {
                     translate([0,0,-std_thickness]) cube(base_cube_dim);
