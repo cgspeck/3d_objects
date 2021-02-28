@@ -113,7 +113,7 @@ module Box(section="base") {
         box_ext_dimensions.y,
         split_z
     ];
-    push_fit_tab_z_tran=base_cube_dim.z - push_fit_tab_height - 3.5 + clearance_loose + .3;
+    push_fit_tab_z_tran=base_cube_dim.z - push_fit_tab_height - 3.5 + clearance_loose + 0.7;
     push_fit_tab_z_dim=3.5 + clearance_loose;
     translate(box_tran) {
         difference() {
