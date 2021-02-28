@@ -28,14 +28,14 @@ box_tran=[
 f_cutout_dia = 9;
 f_cutout_pcb_offset_z = 11 + f_cutout_dia / 2;
 
-hanger_hole_dia=4; // clearance for #8 machine screw
+hanger_hole_dia=4.2; // clearance for #8 machine screw
 hanger_head_dia=6.4+(clearance_loose * 2);
 hanger_head_height=2.6;
 hanger_hole_height=std_thickness;
 hanger_cyl_height=hanger_hole_height+hanger_head_height;
 hanger_cyl_dia=hanger_head_dia*2;
 
-pcb_cyl_height=hanger_cyl_height - std_thickness + 5;
+pcb_cyl_height=hanger_cyl_height + 5;
 
 
 box_int_dimensions=[
@@ -161,8 +161,8 @@ module Box(section="base") {
             if (section=="base") {
                 // cutouts for enclosure mount holes
                 translate([box_ext_dimensions.x / 2, 0,0]) {
-                    translate([0, box_ext_dimensions.y / 3,0]) MountCylinder(body=false, cutouts=true);
-                    translate([0, box_ext_dimensions.y / 3 * 2,0]) MountCylinder(body=false, cutouts=true);
+                    translate([0, box_ext_dimensions.y / 3,0]) MountCylinder(body=true, cutouts=false);
+                    translate([0, box_ext_dimensions.y / 3 * 2,0]) MountCylinder(body=true, cutouts=false);
                 }
             }
 
@@ -245,7 +245,6 @@ module Box(section="base") {
                 translate([0, pcb_hole_dy, 0]) PCBCylinder(body=false, cutouts=true);
                 translate([pcb_hole_dx, pcb_hole_dy, 0]) PCBCylinder(body=false, cutouts=true);
             }
-
         }
     }
 }
@@ -253,14 +252,16 @@ module Box(section="base") {
 module MountCylinder(body=true, cutouts=true) {
     difference() {
         union() {
-            if(body) {
+            if (body) {
                 cylinder_outer(hanger_cyl_height, hanger_cyl_dia / 2);
             }
         }
 
-        if(cutouts) {
-            cylinder_outer(hanger_cyl_height, (hanger_hole_dia/2));
-            translate([0,0,hanger_cyl_height - hanger_head_height]) cylinder_outer(hanger_head_height, (hanger_head_dia/2));
+        if (cutouts) {
+            union() {
+                translate([0,0,0]) cylinder_outer(hanger_cyl_height + de_minimus, (hanger_hole_dia/2));
+                translate([0,0,hanger_cyl_height - hanger_head_height]) cylinder_outer(hanger_head_height, (hanger_head_dia/2));
+            }
         }
     }
 }
