@@ -28,11 +28,6 @@ box_tran=[
 f_cutout_dia = 9;
 f_cutout_pcb_offset_z = 11 + f_cutout_dia / 2;
 
-
-b_cutout_offset_z = f_cutout_pcb_offset_z;
-b_cutout_dia = 16;
-
-
 hanger_hole_dia=4; // clearance for #8 machine screw
 hanger_head_dia=6.4+(clearance_loose * 2);
 hanger_head_height=2.6;
@@ -104,7 +99,7 @@ module PCBCylinder(body=true, cutouts=true) {
     }
 }
 
-r_cutout_dim=[40,10,10];
+r_cutout_dim=[40,10,12];
 
 module Box(section="base") {
     split_z = std_thickness + pcb_cyl_height + f_cutout_pcb_offset_z;
@@ -121,7 +116,9 @@ module Box(section="base") {
                 difference() {
                     roundedCube(box_ext_dimensions, r=1.5, sidesonly=true, center=false);
                     translate([std_thickness, std_thickness, std_thickness]) roundedCube(box_int_dimensions, r=1.5, sidesonly=true, center=false);
+                    // cutout for put at front
                     translate([box_ext_dimensions.x / 2, std_thickness + de_minimus, split_z]) rotate([90,0,0]) cylinder_outer(10, f_cutout_dia / 2);
+                    // cutout for wires at rear
                     translate([box_ext_dimensions.x / 2 - r_cutout_dim.x / 2, box_ext_dimensions.y - r_cutout_dim.y / 2, std_thickness + pcb_cyl_height]) roundedCube(r_cutout_dim, r=1.5, sidesonly=false, center=false);
                     // pushfit tab cutouts
                     translate([0,0,push_fit_tab_z_tran]) {
@@ -162,6 +159,7 @@ module Box(section="base") {
                 ], r=1.5, sidesonly=true, center=false);
             }
             if (section=="base") {
+                // cutouts for enclosure mount holes
                 translate([box_ext_dimensions.x / 2, 0,0]) {
                     translate([0, box_ext_dimensions.y / 3,0]) MountCylinder(body=false, cutouts=true);
                     translate([0, box_ext_dimensions.y / 3 * 2,0]) MountCylinder(body=false, cutouts=true);
@@ -174,6 +172,7 @@ module Box(section="base") {
             slit_start_z=pcb_cyl_height+std_thickness;
             slit_cover_start_x = std_thickness * 3;
 
+            // VENTS
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 2]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 4]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
@@ -203,6 +202,7 @@ module Box(section="base") {
             translate([slit_cover_start_x + std_thickness * 20,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
             translate([slit_cover_start_x + std_thickness * 22,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
         }
+        // ADDITIONS
         if (section=="cover") {
             pft_origin=-22.1;
             translate([0,0,base_cube_dim.z - std_thickness]) rotate([180,0,0]) {
