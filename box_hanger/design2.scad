@@ -25,8 +25,9 @@ box_tran=[
     -std_thickness
 ];
 
-f_cutout_pcb_offset_z = 11;
 f_cutout_dia = 9;
+f_cutout_pcb_offset_z = 11 + f_cutout_dia / 2;
+
 
 b_cutout_offset_z = f_cutout_pcb_offset_z;
 b_cutout_dia = 16;
@@ -106,7 +107,12 @@ module PCBCylinder(body=true, cutouts=true) {
 r_cutout_dim=[40,10,10];
 
 module Box(section="base") {
-    base_cube_dim=[box_ext_dimensions.x,box_ext_dimensions.y,box_ext_dimensions.z / 2];
+    split_z = std_thickness + pcb_cyl_height + f_cutout_pcb_offset_z;
+    base_cube_dim=[
+        box_ext_dimensions.x,
+        box_ext_dimensions.y,
+        split_z
+    ];
     push_fit_tab_z_tran=base_cube_dim.z - push_fit_tab_height - 3.5 + clearance_loose + .3;
     push_fit_tab_z_dim=3.5 + clearance_loose;
     translate(box_tran) {
@@ -115,7 +121,7 @@ module Box(section="base") {
                 difference() {
                     roundedCube(box_ext_dimensions, r=1.5, sidesonly=true, center=false);
                     translate([std_thickness, std_thickness, std_thickness]) roundedCube(box_int_dimensions, r=1.5, sidesonly=true, center=false);
-                    translate([box_ext_dimensions.x / 2, std_thickness + de_minimus, std_thickness + pcb_cyl_height + f_cutout_pcb_offset_z]) rotate([90,0,0]) cylinder_outer(10, f_cutout_dia / 2);
+                    translate([box_ext_dimensions.x / 2, std_thickness + de_minimus, split_z]) rotate([90,0,0]) cylinder_outer(10, f_cutout_dia / 2);
                     translate([box_ext_dimensions.x / 2 - r_cutout_dim.x / 2, box_ext_dimensions.y - r_cutout_dim.y / 2, std_thickness + pcb_cyl_height]) roundedCube(r_cutout_dim, r=1.5, sidesonly=false, center=false);
                     translate([0,0,push_fit_tab_z_tran]) {
                         translate([0,base_cube_dim.y / 4 - 5, 0]) cube([box_ext_dimensions.x,10,push_fit_tab_z_dim]);
@@ -164,7 +170,7 @@ module Box(section="base") {
 
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 2]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
-
+            translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 4]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 6]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 8]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
             translate([0,box_ext_dimensions.y/2 - slit_large_y / 2,slit_start_z + std_thickness * 10]) cube([box_ext_dimensions.x,slit_large_y,std_thickness]);
@@ -172,7 +178,7 @@ module Box(section="base") {
 
             translate([0,5,slit_start_z]) cube([box_ext_dimensions.x,slit_small_y,std_thickness]);
             translate([0,5,slit_start_z + std_thickness * 2]) cube([box_ext_dimensions.x,slit_small_y,std_thickness]);
-
+            translate([0,5,slit_start_z + std_thickness * 4]) cube([box_ext_dimensions.x,slit_small_y,std_thickness]);
             translate([0,5,slit_start_z + std_thickness * 6]) cube([box_ext_dimensions.x,slit_small_y,std_thickness]);
             translate([0,5,slit_start_z + std_thickness * 8]) cube([box_ext_dimensions.x,slit_small_y,std_thickness]);
             translate([0,5,slit_start_z + std_thickness * 10]) cube([box_ext_dimensions.x,slit_small_y,std_thickness]);
@@ -190,7 +196,7 @@ module Box(section="base") {
             translate([slit_cover_start_x + std_thickness * 18,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
         }
         if (section=="cover") {
-            pft_origin=-23;
+            pft_origin=-22.1;
             translate([0,0,base_cube_dim.z - std_thickness]) rotate([180,0,0]) {
                 translate([std_thickness,0,0]) {
                     translate([0,-base_cube_dim.y / 4, 0]) push_fit_tab(pft_origin);
