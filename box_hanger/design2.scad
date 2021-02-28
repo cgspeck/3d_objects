@@ -130,9 +130,11 @@ module Box(section="base") {
                     translate([0,0,push_fit_tab_z_tran]) {
                         translate([0,base_cube_dim.y / 4 * 3 - 5, 0]) cube([box_ext_dimensions.x,10,push_fit_tab_z_dim]);
                     }
-                    // pushfit tab clearance
-                    translate([0,base_cube_dim.y / 4 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
-                    translate([0,base_cube_dim.y / 4 * 3 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
+                    if (section=="base") {
+                        // pushfit tab clearance
+                        translate([0,base_cube_dim.y / 4 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
+                        translate([0,base_cube_dim.y / 4 * 3 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
+                    }
                 }
                 if (section=="base") {
                     translate([0,0,-std_thickness]) cube(base_cube_dim);
