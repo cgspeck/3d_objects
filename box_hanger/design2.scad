@@ -44,7 +44,7 @@ pcb_cyl_height=hanger_cyl_height - std_thickness + 5;
 
 
 box_int_dimensions=[
-    pcb_hole_dx + (pcb_hole_dia) * 3 + 0,
+    pcb_hole_dx + (pcb_hole_dia) * 3 + 10,
     pcb_hole_dy + (pcb_hole_dia) * 3,
     pcb_cyl_height + 28 + 5
 ];
@@ -194,6 +194,8 @@ module Box(section="base") {
             translate([slit_cover_start_x + std_thickness * 14,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
             translate([slit_cover_start_x + std_thickness * 16,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
             translate([slit_cover_start_x + std_thickness * 18,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
+            translate([slit_cover_start_x + std_thickness * 20,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
+            translate([slit_cover_start_x + std_thickness * 22,7,box_ext_dimensions.z - std_thickness]) cube([std_thickness,slit_cover_y,std_thickness]);
         }
         if (section=="cover") {
             pft_origin=-22.1;
@@ -261,5 +263,5 @@ module MountCylinder(body=true, cutouts=true) {
 
 
 Box();
-// translate([0,0,20]) Box("cover");
+translate([0,0,20]) Box("cover");
 
