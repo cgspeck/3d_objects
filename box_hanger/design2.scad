@@ -44,7 +44,7 @@ pcb_cyl_height=hanger_cyl_height - std_thickness + 5;
 
 
 box_int_dimensions=[
-    pcb_hole_dx + (pcb_hole_dia) * 3,
+    pcb_hole_dx + (pcb_hole_dia) * 3 + 0,
     pcb_hole_dy + (pcb_hole_dia) * 3,
     pcb_cyl_height + 28 + 5
 ];
@@ -215,6 +215,29 @@ module Box(section="base") {
                 translate([0, box_ext_dimensions.y / 3,0]) MountCylinder();
                 translate([0, box_ext_dimensions.y / 3 * 2,0]) MountCylinder();
             }
+            translate([
+                (box_ext_dimensions.x / 2) - pcb_hole_dx / 2,
+                std_thickness + (pcb_hole_dia * 1.5),
+                0
+            ]) difference() {
+                union() {
+                    union() {
+                        PCBCylinder();
+                        translate([pcb_hole_dx, 0, 0]) PCBCylinder();
+                    }
+
+                    union() {
+                        translate([0, pcb_hole_dy, 0]) PCBCylinder();
+                        translate([pcb_hole_dx, pcb_hole_dy, 0]) PCBCylinder();
+                    }
+                }
+
+                PCBCylinder(body=false, cutouts=true);
+                translate([pcb_hole_dx, 0, 0]) PCBCylinder(body=false, cutouts=true);
+                translate([0, pcb_hole_dy, 0]) PCBCylinder(body=false, cutouts=true);
+                translate([pcb_hole_dx, pcb_hole_dy, 0]) PCBCylinder(body=false, cutouts=true);
+            }
+
         }
     }
 }
@@ -235,26 +258,8 @@ module MountCylinder(body=true, cutouts=true) {
 }
 
 
-difference() {
-    union() {
-        union() {
-            PCBCylinder();
-            translate([pcb_hole_dx, 0, 0]) PCBCylinder();
-        }
-
-        union() {
-            translate([0, pcb_hole_dy, 0]) PCBCylinder();
-            translate([pcb_hole_dx, pcb_hole_dy, 0]) PCBCylinder();
-        }
-    }
-
-    PCBCylinder(body=false, cutouts=true);
-    translate([pcb_hole_dx, 0, 0]) PCBCylinder(body=false, cutouts=true);
-    translate([0, pcb_hole_dy, 0]) PCBCylinder(body=false, cutouts=true);
-    translate([pcb_hole_dx, pcb_hole_dy, 0]) PCBCylinder(body=false, cutouts=true);
-}
 
 
 Box();
-translate([0,0,20]) Box("cover");
+// translate([0,0,20]) Box("cover");
 
