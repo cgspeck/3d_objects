@@ -129,8 +129,8 @@ module Box(section="base") {
                     }
                     if (section=="base") {
                         // pushfit tab clearance
-                        translate([0,base_cube_dim.y / 4 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
-                        translate([0,base_cube_dim.y / 4 * 3 - 6, split_z - std_thickness]) cube([box_ext_dimensions.x,12,std_thickness * 2]);
+                        width = 70;
+                        translate([0,base_cube_dim.y / 2 - width / 2, split_z - std_thickness]) cube([box_ext_dimensions.x,width,std_thickness * 2]);
                     }
                 }
                 if (section=="base") {
