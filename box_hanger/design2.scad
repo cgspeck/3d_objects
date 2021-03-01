@@ -25,10 +25,10 @@ box_tran=[
     -std_thickness
 ];
 
-f_cutout_dia = 9;
-f_cutout_pcb_offset_z = 11 + f_cutout_dia / 2;
+f_cutout_dia = 11;
+f_cutout_pcb_offset_z = 10 + f_cutout_dia / 2;
 
-hanger_hole_dia=4.2; // clearance for #8 machine screw
+hanger_hole_dia=4.3; // clearance for #8 machine screw
 hanger_head_dia=6.4+(clearance_loose * 2);
 hanger_head_height=2.6;
 hanger_hole_height=std_thickness;
@@ -99,10 +99,11 @@ module PCBCylinder(body=true, cutouts=true) {
     }
 }
 
-r_cutout_dim=[40,10,12];
+r_cutout_dim=[40,10,16];
 
 module Box(section="base") {
     split_z = std_thickness + pcb_cyl_height + f_cutout_pcb_offset_z;
+
     base_cube_dim=[
         box_ext_dimensions.x,
         box_ext_dimensions.y,
@@ -116,10 +117,17 @@ module Box(section="base") {
                 difference() {
                     roundedCube(box_ext_dimensions, r=1.5, sidesonly=true, center=false);
                     translate([std_thickness, std_thickness, std_thickness]) roundedCube(box_int_dimensions, r=1.5, sidesonly=true, center=false);
-                    // cutout for put at front
-                    translate([box_ext_dimensions.x / 2, std_thickness + de_minimus, split_z]) rotate([90,0,0]) cylinder_outer(10, f_cutout_dia / 2);
+                    // cutout for pot at front
+                    translate([
+                        box_ext_dimensions.x / 2,
+                        std_thickness + de_minimus,
+                        split_z
+                    ]) rotate([90,0,0]) cylinder_outer(10, f_cutout_dia / 2);
                     // cutout for wires at rear
-                    translate([box_ext_dimensions.x / 2 - r_cutout_dim.x / 2, box_ext_dimensions.y - r_cutout_dim.y / 2, std_thickness + pcb_cyl_height]) roundedCube(r_cutout_dim, r=1.5, sidesonly=false, center=false);
+                    translate([
+                        box_ext_dimensions.x / 2 - r_cutout_dim.x / 2,
+                        box_ext_dimensions.y - r_cutout_dim.y / 2,
+                        std_thickness + pcb_cyl_height]) roundedCube(r_cutout_dim, r=1.5, sidesonly=false, center=false);
                     // pushfit tab cutouts
                     translate([0,0,push_fit_tab_z_tran]) {
                         translate([0,base_cube_dim.y / 4 - 5, 0]) cube([box_ext_dimensions.x,10,push_fit_tab_z_dim]);
