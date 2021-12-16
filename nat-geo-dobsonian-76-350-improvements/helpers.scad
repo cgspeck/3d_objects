@@ -71,3 +71,22 @@ module NutHoleAssembly(
     }
 }
 
+module Handle(
+    OUTDENT_COUNT=24,
+    HANDLE_OUTDENT_RADIUS=4,
+    WHEEL_RADIUS=50,
+    HANDLE_THICKNESS=6
+) {
+    // handle
+    translate([0,0,HANDLE_THICKNESS/2]) torus2(WHEEL_RADIUS, HANDLE_THICKNESS/2);
+    // outdents
+    outdent_degrees = 360 / OUTDENT_COUNT;
+    for(sector = [1 : OUTDENT_COUNT]) {
+        angle = outdent_degrees * sector;
+        x_pos = WHEEL_RADIUS * sin(angle);
+        y_pos = WHEEL_RADIUS * cos(angle);
+        translate([x_pos,y_pos,HANDLE_OUTDENT_RADIUS]){
+            sphere(HANDLE_OUTDENT_RADIUS, center=true);
+        }
+    }
+}
