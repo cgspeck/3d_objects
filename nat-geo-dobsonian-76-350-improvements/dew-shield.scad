@@ -1,7 +1,7 @@
 include <helpers.scad>
 include <shared.scad>
 
-sample_mode=true;
+sample_mode=false;
 
 plug_part_len=11;
 plug_part_od=91.8;
