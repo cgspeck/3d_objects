@@ -93,13 +93,14 @@ module Handle(
 
 module CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia, screw_z_offset=de_minimis) {
     actual_screw_dia=screw_dia + (clearance_tight * 2);
+    actual_csc_head_dia = csc_head_dia + (clearance_tight * 2);
     translate([
         0,
         0,
         -screw_len + screw_z_offset
     ]) {
         cylinder_outer(screw_len, actual_screw_dia / 2);
-        translate([0, 0, screw_len]) cone_outer(csc_len, actual_screw_dia / 2, csc_head_dia /2);
-        translate([0, 0, screw_len + csc_len]) cylinder_outer(screw_len * 2, csc_head_dia / 2);;
+        translate([0, 0, screw_len]) cone_outer(csc_len, actual_screw_dia / 2, actual_csc_head_dia /2);
+        translate([0, 0, screw_len + csc_len]) cylinder_outer(screw_len * 2, actual_csc_head_dia / 2);;
     }
 }

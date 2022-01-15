@@ -15,8 +15,8 @@ lip_z=5;
 min_bridge_width=15;
 
 // designed around rough measurements of a #8 screw
-screw_dia=4.2 + clearance_loose;
-csc_head_dia=7.2 + clearance_loose;
+screw_dia=4.2;
+csc_head_dia=7.2;
 csc_len=2.3;
 
 width_factor=2;
