@@ -19,4 +19,6 @@ Also, a git repo naturally affords version tracking, which is quite useful when 
 
 ## License
 
-The contents of this repository is licensed under the [GNU AGPLv3](LICENSE).
+The contents of this repository (except for `trace2scad`) is licensed under the [GNU AGPLv3](LICENSE).
+
+`trace2scad` is licensed Creative Commons - Attribution, by Hank Dietz, with shell-check linting fixes.
