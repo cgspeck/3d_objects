@@ -3,8 +3,8 @@ include <shared.scad>
 
 bracket_inner_dim=[
     14.9,
-    34,
-    26
+    35,
+    27
 ];
 
 bracket_thickness=min_thickness;
@@ -27,22 +27,23 @@ bracket_outlet_tran=[
 bolt_dia=3;
 bolt_rad=bolt_dia/2;
 
+bolt_hole_dx=50;
+
 hole_dist_x=bracket_inner_dim.x + 3.5 + bolt_rad;
-hole_dist_plus_y=bracket_thickness + bracket_inner_dim.y + 4.5 + bolt_rad;
-hole_dist_minus_y=bracket_thickness - 7 - bolt_rad;
+hole_origin_y=bracket_thickness - 7.5 - bolt_rad;
 
 module hole_pads() {
     pad_rad=bolt_dia*2;
 
     translate([
         hole_dist_x,
-        hole_dist_plus_y,
+        hole_origin_y,
         0
     ]) cylinder_outer(min_thickness, pad_rad);
 
     translate([
         hole_dist_x,
-        hole_dist_minus_y,
+        hole_origin_y + bolt_hole_dx,
         0
     ]) cylinder_outer(min_thickness, pad_rad);
 }
@@ -50,13 +51,13 @@ module hole_pads() {
 module bolt_holes() {
     translate([
         hole_dist_x,
-        hole_dist_plus_y,
+        hole_origin_y + bolt_hole_dx,
         0
     ]) cylinder_outer(min_thickness, bolt_rad + clearance_loose);
 
     translate([
         hole_dist_x,
-        hole_dist_minus_y,
+        hole_origin_y,
         0
     ]) cylinder_outer(min_thickness, bolt_rad + clearance_loose);  
 }
