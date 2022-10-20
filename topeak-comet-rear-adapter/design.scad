@@ -19,7 +19,7 @@ comet_pts = [
     [-topeak_x/2, comet_y],
 ];
 
-difference() {
+rotate([90,0,0]) difference() {
     union() {
         translate([0,-comet_y / 2,0]) linear_extrude(topeak_bolt_z) polygon(points=comet_pts);
         translate([0,0,1]) {
