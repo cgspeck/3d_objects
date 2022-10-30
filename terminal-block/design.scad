@@ -62,6 +62,7 @@ module TerminalBlock(
         }
 
         if (cutout_only ||  !base_only) {
+            nutHoleDiameter=METRIC_NUT_AC_WIDTHS[3] + (0.0001 * 2);
             for (i=[1:terminal_count])
             {
                 start_x = (i - 1) * (terminal_width + ridge_width);
@@ -75,7 +76,7 @@ module TerminalBlock(
                 {
                     translate(nut_tran)
                     {
-                        nutHole(3);
+                        resize([nutHoleDiameter, nutHoleDiameter, nut_section_height]) nutHole(3);
                         cylinder_outer(full_height + de_minimus, (3 + clearance_loose) / 2);
                     }
                 }
