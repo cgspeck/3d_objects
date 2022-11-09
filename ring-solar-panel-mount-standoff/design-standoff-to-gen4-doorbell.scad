@@ -77,7 +77,7 @@ translate([0,0,-14]) difference() {
         solar_panel_mount();
         ring_mount();
     };
-    translate([0,0,-de_minimis]) {
+    rotate([0,0,180]) translate([0,0,-de_minimis]) {
         // holes for the shim to the other shim
         translate([0,solar_panel_mount_hole_y_offset,0]) {
             translate([-solar_panel_mount_hole_dx/2,-solar_panel_mount_hole_dy/2,0]) {
