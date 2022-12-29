@@ -1,6 +1,15 @@
 include <MCAD/constants.scad>
 include <shared.scad>
 
+pole_ridges=true;
+
+pole_xy=21;
+pole_ridge_x=pole_xy + 2min_thickness + 2clearance_loose;
+pole_ridge_rad=pole_ridge_x /  2;
+pole_ridge_depth=2min_thickness;
+
+adapter_height=15 + pole_ridge_depth;
+
 ring_bracket_dia=69;
 ring_bracket_rad=ring_bracket_dia/2;
 
@@ -18,25 +27,19 @@ ring_hole_translations=[
     [half_ring_bracket_hole_dx_dy, -half_ring_bracket_hole_dx_dy]
 ];
 
-pole_xy=1 * mm_per_inch;
-pole_ridge_x=pole_xy + 2min_thickness + 2clearance_loose;
-pole_ridge_rad=pole_ridge_x /  2;
-pole_ridge_depth=2min_thickness;
-
-adapter_height=15 + pole_ridge_depth;
-
 difference(){
     cone_outer(
         adapter_height,
         ring_bracket_rad,
         pole_ridge_rad
     );
+
     translate([
         0,
         0,
         adapter_height - pole_ridge_depth / 2 + de_minimis
     ]) cube([
-        pole_xy + 2clearance_loose,
+        pole_ridges ? pole_xy + 2clearance_loose : ring_bracket_rad * 2,
         ring_bracket_dia,
         pole_ridge_depth
         ],
@@ -67,5 +70,4 @@ difference(){
         8.1,
         screw_z_offset=de_minimis
     );
-    
 }
