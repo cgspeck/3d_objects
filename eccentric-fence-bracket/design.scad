@@ -4,7 +4,7 @@ verticle_post_xy=65 + 2clearance_loose;
 horizontal_post_xy=50 + 2clearance_loose;
 // sized to fit impact driver bit
 screw_head_dia=14;
-screw_hole_dia=3.8;
+screw_hole_dia=4.8;
 // calc
 screw_head_rad = screw_head_dia / 2;
 screw_hole_rad = screw_hole_dia / 2 + clearance_loose;
@@ -39,20 +39,7 @@ horizontal_post_trans=[
     verticle_post_outer_dim.y,
     verticle_post_outer_dim.z - horizontal_post_outer_dim.z - de_minimis
 ];
-// actual_light_x=light_x+2clearance_loose;
-// screw_head_rad=screw_head_dia/2;
-// rect_dim=[
-//     actual_light_x+2min_thickness,
-//     triangle_cutout_y_z+min_thickness,
-//     triangle_cutout_y_z+min_thickness
-// ];
-// screw_head_tran=[
-//     rect_dim.x / 2,
-//     rect_dim.y + screw_head_rad,
-//     0
-// ];
 
-// screw_hole_rad=screw_hole_dia/2 + clearance_loose;
 
 module ScrewHead(extra_head_through=0) {
     cylinder_outer(2min_thickness + 2 * de_minimis, screw_hole_rad);
