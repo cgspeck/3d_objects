@@ -1,10 +1,11 @@
 use <MCAD/regular_shapes.scad>
 
-Hole_Diameter=22;
-Hole_Depth=25;
+Hole_Diameter=30;
+Hole_Depth=30;
 Cap_Height=2.4;
 Do_Bulge=true;
 Bulge_Width=1.5;
+CapDiaMult=1.2;
 
 /* [ Advanced ] */
 Minimum_Thickness=1.2;
@@ -13,7 +14,7 @@ bulge_height=Bulge_Width * 2;
 fn=72 * 4;
 $fn=fn;
 
-cap_lower_dia=Hole_Diameter * 2;
+cap_lower_dia=Hole_Diameter * CapDiaMult;
 cap_upper_dia=cap_lower_dia-(Cap_Height * 2);
 2Minimum_Thickness=Minimum_Thickness * 2;
 de_minimus=0.1 * 1;
