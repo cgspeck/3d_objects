@@ -1,8 +1,8 @@
 use <MCAD/regular_shapes.scad>
 
-Hole_Diameter=30;
-Hole_Depth=30;
-Cap_Height=2.4;
+Hole_Diameter=19.8 - 0.2;
+Hole_Depth=2.8 + 0.2;
+Cap_Height=0.8;
 Do_Bulge=true;
 Bulge_Width=1.5;
 CapDiaMult=1.2;
