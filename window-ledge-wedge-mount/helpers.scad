@@ -101,28 +101,23 @@ module NutSlitAssembly(
     diameter=5,
     length=20,
     nut_depth=2.4,
-    nut_mult=1,
+    nut_height=0,
     bolt_head_len=0,
     de_minimis=0.01
 ) {
     nut_thickness=METRIC_NUT_THICKNESS[diameter];
-    nut_total_height=nut_thickness * nut_mult + 2 * clearance_tight;
-    hole_len=nut_depth+nut_total_height;
+    actual_nut_height=nut_height > 0 ? nut_height : nut_thickness + 2 * clearance_tight;
+    hole_len=nut_depth+actual_nut_height;
     cylinder_outer(hole_len, diameter / 2 + clearance_loose);
 
-    translate([
-        0,
-        0,
-        nut_depth
-    ]) scale([1, 1, nut_mult]) nutHole(diameter);
-
     nut_width=METRIC_NUT_AC_WIDTHS[diameter] + 2 * clearance_tight;
+    echo("nut_width", nut_width);
 
     translate([
         -nut_width / 2,,
         -nut_width / 2,
         nut_depth
-    ]) cube([100, nut_width, nut_total_height]);
+    ]) cube([100, nut_width, actual_nut_height]);
 }
 
 module Handle(
