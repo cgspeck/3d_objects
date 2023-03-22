@@ -7,6 +7,7 @@ clearance_loose=0.4;
 2clearance_loose=2*clearance_loose;
 
 de_minimis=0.01;
+2de_minimis=2*de_minimis;
 min_thickness=2.4;
 2min_thickness=2*min_thickness;
 
