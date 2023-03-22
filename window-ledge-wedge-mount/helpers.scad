@@ -140,15 +140,15 @@ METRIC_NUT_AF_MAX_WIDTHS =
 
 module NutSlotAssembly(
     diameter=5,
-    length=20,
     nut_depth=2.4,
     nut_height=0,
     clearance=0,
+    length_behind_slot=0
 ) {
     nut_ac_width=METRIC_NUT_AC_WIDTHS[diameter] + 2 * clearance;
     nut_af_width=METRIC_NUT_AF_MAX_WIDTHS[diameter] + 2 * clearance;
     actual_nut_height=nut_height > 0 ? nut_height : METRIC_NUT_THICKNESS[diameter] + 2 * clearance;
-    hole_len=nut_depth+actual_nut_height;
+    hole_len=nut_depth+actual_nut_height+length_behind_slot;
     cylinder_outer(hole_len, diameter / 2 + clearance_loose);
 
     translate([
