@@ -21,30 +21,34 @@ thickness=max(min_thickness, csc_len);
 internal_thickness=min_thickness;
 
 marker_dia=1;
+frame_csc_head_mult=2;
 //calc
 corner_rad=corner_dia/2;
 marker_rad=marker_dia/2;
-frame_width=csc_head_dia*3;
+
+half_frame_csc_head_mult=frame_csc_head_mult/2;
+frame_width=csc_head_dia*frame_csc_head_mult;
+
 
 
 tmpl_dim=[
-    (frame_timber_width * 2 + frame_timber_spacing) - ((frame_width * 2) + (thickness * 2) + 2clearance_loose),
-    hand_hole_inner_height + (thickness * 2) + 2clearance_loose,
+    (frame_timber_width * 2 + frame_timber_spacing) - ((frame_width * 2) + (internal_thickness * 2) + 2clearance_loose),
+    hand_hole_inner_height + (internal_thickness * 2) + 2clearance_loose,
 ];
 
 frame_outer_dim=[
     (frame_timber_width * 2 + frame_timber_spacing),
-    hand_hole_inner_height + (2 * frame_width) + (2 * thickness),
+    hand_hole_inner_height + (2 * frame_width) + (2 * internal_thickness),
 ];
 
 frame_inner_dim=[
-    frame_outer_dim.x - ((frame_width * 2) + (thickness * 2)),
-    frame_outer_dim.y - ((frame_width * 2) + (thickness * 2)),
+    frame_outer_dim.x - ((frame_width * 2) + (internal_thickness * 2)),
+    frame_outer_dim.y - ((frame_width * 2) + (internal_thickness * 2)),
 ];
 
 frame_through_part_outer_dim=[
-    frame_inner_dim.x + (thickness * 2),
-    frame_inner_dim.y + (thickness * 2),
+    frame_inner_dim.x + (internal_thickness * 2),
+    frame_inner_dim.y + (internal_thickness * 2),
 ];
 
 module CutoutTemplate() {
@@ -105,38 +109,38 @@ module Frame() {
         screw_hole_z=min(csc_len, thickness);
 
         translate([
-            -frame_outer_dim.x/2 + csc_head_dia * 1.5,
+            -frame_outer_dim.x/2 + csc_head_dia * half_frame_csc_head_mult,
             0,
             screw_hole_z
         ]) rotate([180,0,0]) CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia);
 
         translate([
-            frame_outer_dim.x/2 - csc_head_dia * 1.5,
+            frame_outer_dim.x/2 - csc_head_dia * half_frame_csc_head_mult,
             0,
             screw_hole_z
         ]) rotate([180,0,0]) CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia);
 
         translate([
             -frame_outer_dim.x/2 + frame_timber_width / 2,
-            frame_outer_dim.y / 2 - csc_head_dia * 1.5,
+            frame_outer_dim.y / 2 - csc_head_dia * half_frame_csc_head_mult,
             screw_hole_z
         ]) rotate([180,0,0]) CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia);
 
         translate([
             -frame_outer_dim.x/2 + frame_timber_width / 2,
-            -frame_outer_dim.y / 2 + csc_head_dia * 1.5,
+            -frame_outer_dim.y / 2 + csc_head_dia * half_frame_csc_head_mult,
             screw_hole_z
         ]) rotate([180,0,0]) CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia);
 
         translate([
             frame_outer_dim.x/2 - frame_timber_width / 2,
-            frame_outer_dim.y / 2 - csc_head_dia * 1.5,
+            frame_outer_dim.y / 2 - csc_head_dia * half_frame_csc_head_mult,
             screw_hole_z
         ]) rotate([180,0,0]) CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia);
 
         translate([
             frame_outer_dim.x/2 - frame_timber_width / 2,
-            -frame_outer_dim.y / 2 + csc_head_dia * 1.5,
+            -frame_outer_dim.y / 2 + csc_head_dia * half_frame_csc_head_mult,
             screw_hole_z
         ]) rotate([180,0,0]) CounterSunkScrew(screw_dia, screw_len, csc_len, csc_head_dia);
     }
