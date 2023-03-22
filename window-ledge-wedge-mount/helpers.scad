@@ -96,28 +96,66 @@ module NutHoleAssembly(
     }
 }
 
+//Based on: http://www.roymech.co.uk/Useful_Tables/Screws/Hex_Screws.htm
+METRIC_NUT_AF_MAX_WIDTHS =
+[
+	-1, //0 index is not used but reduces computation
+	-1,
+	-1,//m2  NO LONGER ON TABLE?
+	5.5,//m3
+	7.0,//m4
+	8.0,//m5
+	10.0,//m6
+	-1,
+	13.00,//m8
+	-1,
+	17.00,//m10
+	-1,
+	19.00,//m12
+	-1,
+	-1,
+	-1,
+	24.00,//m16
+	-1,
+	-1,
+	-1,
+	30.00,//m20
+	-1,
+	-1,
+	-1,
+	36.00,//m24
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	46.00,//m30
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	55.00//m36
+];
 
-module NutSlitAssembly(
+module NutSlotAssembly(
     diameter=5,
     length=20,
     nut_depth=2.4,
     nut_height=0,
-    bolt_head_len=0,
-    de_minimis=0.01
+    clearance=0,
 ) {
-    nut_thickness=METRIC_NUT_THICKNESS[diameter];
-    actual_nut_height=nut_height > 0 ? nut_height : nut_thickness + 2 * clearance_tight;
+    nut_ac_width=METRIC_NUT_AC_WIDTHS[diameter] + 2 * clearance;
+    nut_af_width=METRIC_NUT_AF_MAX_WIDTHS[diameter] + 2 * clearance;
+    actual_nut_height=nut_height > 0 ? nut_height : METRIC_NUT_THICKNESS[diameter] + 2 * clearance;
     hole_len=nut_depth+actual_nut_height;
     cylinder_outer(hole_len, diameter / 2 + clearance_loose);
 
-    nut_width=METRIC_NUT_AC_WIDTHS[diameter] + 2 * clearance_tight;
-    echo("nut_width", nut_width);
-
     translate([
-        -nut_width / 2,,
-        -nut_width / 2,
+        -nut_ac_width / 2,
+        -nut_af_width / 2,
         nut_depth
-    ]) cube([100, nut_width, actual_nut_height]);
+    ]) cube([100, nut_af_width, actual_nut_height]);
 }
 
 module Handle(
