@@ -32,7 +32,7 @@ frame_width=csc_head_dia*frame_csc_head_mult;
 
 
 tmpl_dim=[
-    (frame_timber_width * 2 + frame_timber_spacing) - ((frame_width * 2) + (internal_thickness * 2) + 2clearance_loose),
+    (frame_timber_width * 2 + frame_timber_spacing) - ((frame_width - clearance_loose) * 2),
     hand_hole_inner_height + (internal_thickness * 2) + 2clearance_loose,
 ];
 
