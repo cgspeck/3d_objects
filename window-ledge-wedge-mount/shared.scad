@@ -6,7 +6,7 @@ include <MCAD/units.scad>
 include <helpers.scad>
 
 start_angle=13;
-desired_angle=65;
+desired_angle=60;
 
 // SELECT Ramset AnkaScrew as06050wgm
 // https://ramset.com.au/Product/Detail/312/WERCS-AnkaScrew-Screw-In-Anchors
