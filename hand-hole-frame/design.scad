@@ -1,10 +1,11 @@
 include <shared.scad>
 use <MCAD/2Dshapes.scad>
 
-frame_timber_width=70;
-frame_timber_spacing=6;
+frame_timber_width=65;      // actual is 65.75
+frame_timber_spacing=8;     // actual is 8.3
 frame_timber_thickness=19;
-
+//147
+//139.8
 corner_dia=12.5;
 hand_hole_inner_height=130;
 
