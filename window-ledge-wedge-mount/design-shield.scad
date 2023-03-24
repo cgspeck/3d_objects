@@ -3,7 +3,7 @@ include <shared.scad>
 shield_bolt_dh=70;
 
 // applicable to this model
-shield_x=1373;
+shield_x=1492;
 shield_y=400;
 mat_thickness=3;
 shield_dim=[
