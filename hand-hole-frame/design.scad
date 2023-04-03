@@ -152,6 +152,9 @@ module TwoDFrame() {
     projection() Frame();
 }
 
-// TwoDFrame();
-Frame();
-// CutoutTemplate();
+// difference() {
+//     TwoDFrame();
+//     CutoutTemplate();
+// }
+
+CutoutTemplate();

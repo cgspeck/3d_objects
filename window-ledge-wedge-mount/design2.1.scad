@@ -33,7 +33,9 @@ shield_bolt_1_y=cos(actual_angle) * shield_bolt_1_hyp;
 
 shield_bolt_2_z=sin(actual_angle) * shield_bolt_2_hyp + front_edge_height;
 shield_bolt_2_y=cos(actual_angle) * shield_bolt_2_hyp;
-shield_nut_height=4.85 + 2 * clearance_tight;
+shield_nut_height=4.85;
+
+nut_slot_clearance=clearance_tight * 0.0;
 
 difference() {
     rotate([90,0,0]) rotate([0,90,0]) linear_extrude(mount_x) polygon(points=mount_yz_pts_22);
@@ -50,7 +52,7 @@ difference() {
         diameter=shield_bolt_size,
         nut_depth=shield_nut_depth,
         nut_height=shield_nut_height,
-        clearance=0,
+        clearance=nut_slot_clearance,
         length_behind_slot=15
     );
 
@@ -58,7 +60,7 @@ difference() {
         diameter=shield_bolt_size,
         nut_depth=shield_nut_depth,
         nut_height=shield_nut_height,
-        clearance=0,
+        clearance=nut_slot_clearance,
         length_behind_slot=15
     );
 }
