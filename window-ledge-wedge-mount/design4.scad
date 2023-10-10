@@ -38,6 +38,7 @@ shield_nut_height=4.85;
 nut_slot_clearance=clearance_tight * -0.5;
 clearance_slot_height=clearance_tight * 1.0;
 shield_nut_depth=3.25;
+nut_mult=3;
 
 difference() {
     rotate([90,0,0]) rotate([0,90,0]) linear_extrude(mount_x) polygon(points=mount_yz_pts_22);
@@ -50,22 +51,27 @@ difference() {
         tolerance=0.40
     );
 
-    translate([mount_x / 2, shield_bolt_1_y, shield_bolt_1_z]) rotate([actual_angle-180,0,0]) NutSlotAssembly(
+    // module NutHoleAssembly(
+//     diameter=5,
+//     length=20,
+//     nut_depth=2.4,
+//     nut_mult=1,
+//     bolt_head_len=0,
+//     de_minimis=0.01
+// ) {
+
+    translate([mount_x / 2, shield_bolt_1_y, shield_bolt_1_z]) rotate([actual_angle-180,0,0]) NutHoleAssembly(
         diameter=shield_bolt_size,
-        nut_depth=shield_nut_depth,
-        nut_height=shield_nut_height,
-        clearance=nut_slot_clearance,
-        clearance_slot_height=clearance_slot_height,
-        length_behind_slot=15
+        length=70,
+        nut_mult=nut_mult,
+        nut_depth=shield_nut_depth
     );
 
-    translate([mount_x / 2, shield_bolt_2_y, shield_bolt_2_z]) rotate([actual_angle-180,0,0]) NutSlotAssembly(
+    translate([mount_x / 2, shield_bolt_2_y, shield_bolt_2_z]) rotate([actual_angle-180,0,0]) NutHoleAssembly(
         diameter=shield_bolt_size,
-        nut_depth=shield_nut_depth,
-        nut_height=shield_nut_height,
-        clearance=nut_slot_clearance,
-        clearance_slot_height=clearance_slot_height,
-        length_behind_slot=15
+        length=70,
+        nut_mult=nut_mult,
+        nut_depth=shield_nut_depth
     );
 }
 
