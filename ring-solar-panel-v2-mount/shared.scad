@@ -20,7 +20,13 @@ solar_panel_post_x = 6.8;
 solar_panel_post_z = 56;
 solar_panel_post_y = base_x;
 
+solar_panel_base_x = 36 - 2 * clearance_loose;
+solar_panel_base_y = 37.6;
+solar_panel_base_z = 2 - clearance_tight;
+
 solar_panel_screw_dia = 3 + 2 * clearance_loose;
 solar_panel_screw_rad = solar_panel_screw_dia / 2;
+
+
 
 hirth_teeth = 24;

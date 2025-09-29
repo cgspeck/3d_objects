@@ -54,21 +54,57 @@ module solar_panel_post() {
 module solar_panel_base() {
   tab_x = 4 - clearance_tight * 2;
   difference() {
-    base_z = 2 - clearance_tight;
-    base_x = 36 - 2 * clearance_loose;
-
     union() {
-      roundedCube([base_x, 37.6, base_z], 2, true);
-      translate([0, 0]) cube([base_x, 3, base_z]);
-      translate([(base_x / 2) - tab_x / 2, 0.5, 0]) cube([tab_x, 1.5, base_z + 1]);
-      translate([-(42 - base_x) / 2, -5]) {
-        roundedCube([42, 5, base_z], 2, true);
-        translate([0, 5/2]) cube([42, 5/2, base_z]);
+      roundedCube([solar_panel_base_x, solar_panel_base_y, solar_panel_base_z], 2, true);
+      translate([0, 0]) cube([solar_panel_base_x, 3, solar_panel_base_z]);
+      translate([(solar_panel_base_x / 2) - tab_x / 2, 0.5, 0]) cube([tab_x, 1.5, solar_panel_base_z + 1]);
+      translate([-(42 - solar_panel_base_x) / 2, -5]) {
+        roundedCube([42, 5, solar_panel_base_z], 2, true);
+        translate([0, 5/2]) cube([42, 5/2, solar_panel_base_z]);
       }
     }
-    translate([base_x / 2 + tab_x / 2, -5, -epsilon]) cube([1, 8 + 5, base_z + epsilon * 2]);
-    translate([base_x / 2 - tab_x / 2 - 1, -5, -epsilon]) cube([1, 8 + 5, base_z + epsilon * 2]);
-    translate([base_x / 2 - tab_x / 2, -6, -1]) rotate([45,0,0]) cube([tab_x, 10, 10]);
+    translate([solar_panel_base_x / 2 + tab_x / 2, -5, -epsilon]) cube([1, 8 + 5, solar_panel_base_z + epsilon * 2]);
+    translate([solar_panel_base_x / 2 - tab_x / 2 - 1, -5, -epsilon]) cube([1, 8 + 5, solar_panel_base_z + epsilon * 2]);
+    translate([solar_panel_base_x / 2 - tab_x / 2, -6, -1]) rotate([45,0,0]) cube([tab_x, 10, 10]);
+  }
+}
+
+module solar_panel_base_countersunk() {
+  add_z = 4;
+  add_trans = [solar_panel_base_x / 2, solar_panel_base_y / 2, solar_panel_base_z - add_z];
+
+  difference() {
+    union() {
+      solar_panel_base();
+      // translate(add_trans) cylinder_outer(3, 6);
+    }
+    translate([0, 0, 2.2]) translate(add_trans)  CounterSunkScrew(3, 5, 1.7, 6);
+  }
+}
+
+module solar_panel_post_countersunk() {
+  add_base_y=3;
+  add_base_tran = [
+    -solar_panel_post_y / 2,
+    solar_panel_post_z - solar_panel_post_y / 2,
+    -8
+  ];
+  add_base_tran_ctr = [
+    0,
+    add_base_tran.y + epsilon,
+    add_base_tran.z + solar_panel_post_y / 2
+  ];
+  difference() {
+    union() {
+      solar_panel_post();
+      translate(add_base_tran) rotate([90, 0, 0]) roundedCube([solar_panel_post_y, solar_panel_post_y, 3], 2, true);
+    }
+
+    translate(add_base_tran_ctr) rotate([90,0,0]) NutHoleAssembly(
+      3,
+      length=10,
+      nut_depth=add_base_y + 1.25,
+    );
   }
 }
 
@@ -85,3 +121,5 @@ difference() {
 
 translate([50, 0]) solar_panel_post();
 translate([100, 0]) solar_panel_base();
+translate([175, 0]) solar_panel_base_countersunk();
+translate([250, 0]) solar_panel_post_countersunk();
