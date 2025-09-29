@@ -1,0 +1,3 @@
+[submodule "__vendor__/bosl2"]
+	path = __vendor__/bosl2
+	url = https://github.com/BelfrySCAD/BOSL2.git
