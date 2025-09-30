@@ -108,6 +108,70 @@ module solar_panel_post_countersunk() {
   }
 }
 
+module solar_panel_cradle() {
+  // this is an upside down Y shaped cradle that I abandoned part way through design
+  side_thickness = 2;
+  panel_x = 8 * inch;
+  panel_y = (6 + 5/8) * inch;
+  bracket_x = 1 * inch;
+  offset_x = 2 * clearance_loose + side_thickness;
+  offset_y = offset_x;
+  total_x = panel_x + 2 * offset_x;
+  total_y = panel_y + 2 * offset_y;
+  center = [total_x / 2, total_y / 2];
+}
+
+module solar_panel_cradle_v2() {
+  // eccentric H shaped cradle
+  side_thickness = 2;
+  dist_x_to_panel = 17;
+  angle_dist = 5;
+  panel_x = 8 * inch;
+  panel_y = (6 + 5/8) * inch;
+  panel_z = 13.75;
+  bracket_x = 1 * inch;
+  offset_x = 2 * clearance_loose + side_thickness;
+  offset_y = offset_x;
+  total_x = panel_x + 2 * offset_x;
+  total_y = panel_y + offset_y;
+  h_arm_y = 12;
+  profile_xy_pts = [
+    [0, 0],
+    [side_thickness + dist_x_to_panel, 0],
+    [side_thickness + dist_x_to_panel, side_thickness],
+    [side_thickness, side_thickness], // omit for end cap
+    [side_thickness, side_thickness + panel_z],
+    [side_thickness + angle_dist, side_thickness + panel_z + angle_dist],
+    [side_thickness + angle_dist, side_thickness + panel_z + angle_dist + side_thickness],
+    [0, side_thickness + panel_z + side_thickness],
+  ];
+
+  profile_cap_xy_pts = [
+    [0, 0],
+    [side_thickness + dist_x_to_panel, 0],
+    [side_thickness + dist_x_to_panel, side_thickness],
+    [side_thickness + angle_dist, side_thickness + panel_z + angle_dist + side_thickness],
+    [0, side_thickness + panel_z + side_thickness],
+  ];
+
+  module side_bracket() {
+    rotate([90, 0, 0]) linear_extrude(side_thickness) polygon(points=profile_cap_xy_pts);
+    translate([0, panel_y, 0]) rotate([90, 0, 0]) linear_extrude(panel_y) polygon(points=profile_xy_pts);
+  }
+
+  module H_arm() {
+    difference() {
+      cube([panel_x, h_arm_y, side_thickness]);
+      translate([panel_x / 2, h_arm_y / 2, 0])  CounterSunkScrew(3, 5, 1.7, 6);
+    }
+  }
+
+  side_bracket(); 
+  translate([side_thickness + clearance_loose * 2 + panel_x, 0, 0]) mirror([1, 0, 0]) side_bracket();
+  translate([side_thickness + clearance_loose, 65 - 5 - h_arm_y, 0]) H_arm();
+  translate([side_thickness + clearance_loose, panel_y - 65 + 5, 0]) H_arm();
+}
+
 // https://github.com/BelfrySCAD/BOSL2/wiki/shapes3d.scad#module-rect_tube
 difference() {
   union() {
@@ -123,3 +187,5 @@ translate([50, 0]) solar_panel_post();
 translate([100, 0]) solar_panel_base();
 translate([175, 0]) solar_panel_base_countersunk();
 translate([250, 0]) solar_panel_post_countersunk();
+
+translate([0, 100]) solar_panel_cradle_v2();
