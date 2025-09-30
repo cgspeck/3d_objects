@@ -1,8 +1,8 @@
 include <shared.scad>;
 
 module screw_hole() {
-  translate([0,0,-epsilon]) cylinder_outer(base_z + epsilon * 2, 3.96 / 2);  
-  translate([0,0,1.8]) cylinder_outer(1.8 + epsilon, 7 / 2);  
+  translate([0,0,-epsilon]) cylinder_outer(base_z + epsilon * 2, 5 / 2);  
+  translate([0,0,1.8]) cylinder_outer(1.8 + epsilon, 8 / 2);  
 }
 
 module pillar() {
