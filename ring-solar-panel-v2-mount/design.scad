@@ -6,12 +6,14 @@ module screw_hole() {
 }
 
 module pillar() {
+  hirth_depth = 3.54;
   difference() {
     union() {
       translate([-base_x / 2, -base_x / 2, 0]) cube([base_x, base_x, 98]);
       translate([-base_x / 2,0, 98]) rotate([0,90,0]) cylinder_outer(base_x, base_x / 2);
     }
     translate([-base_x / 2, 0, 98]) rotate([0, 90, 0]) linear_extrude(solar_panel_post_x  + 2 * clearance_loose) circle_outer(solar_panel_post_y / 2 + clearance_loose * 2);
+    translate([-base_x / 2, -base_x / 2 - clearance_loose * 2, 98 + base_x / 2 + clearance_loose]) rotate([0, 90, 0]) linear_extrude(solar_panel_post_x  + 2 * clearance_loose + hirth_depth) square(solar_panel_post_y + clearance_loose * 4);
     translate([-base_x / 2, 0, 98]) rotate([0, 90, 0]) linear_extrude(base_x + epsilon * 2) circle_outer(solar_panel_screw_rad);
 
     // cutout for hirth
@@ -127,14 +129,13 @@ module solar_panel_cradle_v2() {
   dist_x_to_panel = 17;
   angle_dist = 5;
   panel_x = 8 * inch;
-  panel_y = (6 + 5/8) * inch;
   panel_z = 13.75;
   bracket_x = 1 * inch;
   offset_x = 2 * clearance_loose + side_thickness;
   offset_y = offset_x;
   total_x = panel_x + 2 * offset_x;
   total_y = panel_y + offset_y;
-  h_arm_y = 12;
+  
   profile_xy_pts = [
     [0, 0],
     [side_thickness + dist_x_to_panel, 0],
@@ -167,9 +168,56 @@ module solar_panel_cradle_v2() {
   }
 
   side_bracket(); 
-  translate([side_thickness + clearance_loose * 2 + panel_x, 0, 0]) mirror([1, 0, 0]) side_bracket();
-  translate([side_thickness + clearance_loose, 65 - 5 - h_arm_y, 0]) H_arm();
-  translate([side_thickness + clearance_loose, panel_y - 65 + 5, 0]) H_arm();
+  translate([panel_x + offset_x * 2, 0, 0]) mirror([1, 0, 0]) side_bracket();
+
+  translate([offset_x, h_tran_1, 0]) H_arm();
+  translate([offset_x, h_tran_2, 0]) H_arm();
+}
+
+module solar_panel_post_split_countersunk() {
+  add_base_y=3;
+  pad_y = 3;
+  module rotatedHolePad() {
+    translate([-solar_panel_post_y / 2, pad_y, -solar_panel_post_y / 2 - add_base_y - 1]) {
+      difference() {
+        union() {
+          rotate([90, 0, 0]) roundedCube([solar_panel_post_y, solar_panel_post_y, pad_y], 2, true);
+        }
+
+        translate([
+          solar_panel_post_y / 2,
+          epsilon,
+          solar_panel_post_y / 2
+        ]) rotate([90,0,0]) NutHoleAssembly(
+            3,
+            length=10,
+            nut_depth=add_base_y + 1.25,
+          );
+        }
+      }
+  }
+
+  hirth(
+    hirth_teeth,
+    solar_panel_screw_rad,
+    solar_panel_post_y / 2
+  ) attach(BOTTOM, CENTER) difference() {
+    union() {
+      linear_extrude(solar_panel_post_x  - 2 * clearance_loose) multiHull() {
+        circle_outer(solar_panel_post_y / 2);
+        translate([-h_hole_dy / 2, h_hole_dy - solar_panel_post_y / 2 + epsilon]) square(size=[solar_panel_post_y, epsilon], center=true);
+        translate([h_hole_dy / 2, h_hole_dy - solar_panel_post_y / 2 + epsilon]) square(size=[solar_panel_post_y, epsilon], center=true);
+      }
+      linear_extrude(solar_panel_post_x  - 2 * clearance_loose) {
+        translate([-h_hole_dy / 2, h_hole_dy - solar_panel_post_y / 2 + epsilon + pad_y / 2]) square(size=[solar_panel_post_y, pad_y], center=true);
+        translate([h_hole_dy / 2, h_hole_dy  - solar_panel_post_y / 2 + epsilon + pad_y / 2]) square(size=[solar_panel_post_y, pad_y], center=true);
+      }
+
+      translate([-h_hole_dy / 2, h_hole_dy - solar_panel_post_y / 2 + epsilon]) rotatedHolePad();
+      translate([+h_hole_dy / 2, h_hole_dy - solar_panel_post_y / 2 + epsilon]) rotatedHolePad();
+    }
+    translate([0,0,3]) cylinder_outer(10, solar_panel_screw_rad);
+  }
 }
 
 // https://github.com/BelfrySCAD/BOSL2/wiki/shapes3d.scad#module-rect_tube
@@ -189,3 +237,4 @@ translate([175, 0]) solar_panel_base_countersunk();
 translate([250, 0]) solar_panel_post_countersunk();
 
 translate([0, 100]) solar_panel_cradle_v2();
+translate([300, 160]) solar_panel_post_split_countersunk();

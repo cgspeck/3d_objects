@@ -27,6 +27,15 @@ solar_panel_base_z = 2 - clearance_tight;
 solar_panel_screw_dia = 3 + 2 * clearance_loose;
 solar_panel_screw_rad = solar_panel_screw_dia / 2;
 
+panel_y = (6 + 5/8) * inch;
 
+h_arm_y = solar_panel_post_y;
+h_tran_1 = 65 - 5 - h_arm_y;
+h_tran_2 = panel_y - 65 + 5;
+
+echo("h_tran_1", h_tran_1);
+echo("h_tran_2", h_tran_2);
+h_hole_dy = h_tran_2 - h_tran_1;
+echo("h_hole_dy", h_hole_dy);
 
 hirth_teeth = 24;
