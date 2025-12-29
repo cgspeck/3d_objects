@@ -8,18 +8,21 @@ use <threadlib/threadlib.scad>;
 measured_1_int_major_dim=50 + 0.751;
 table = [["measured-1-int", [2.11667, -measured_1_int_major_dim / 2 - 0.00915, measured_1_int_major_dim , [[0, 0.9260], [0, -0.9260], [1.1457, -0.2646], [1.1457, 0.2646]]]]];
 
-back(30) yrot(270) nut("measured-1", turns=4, Douter=60, nut_sides=6, table=table);
-// tube(ir=20,wall=5,h=30);
-angle=70;
+bend_radius=30;
+back(bend_radius) yrot(270) nut("measured-1", turns=4, Douter=60, nut_sides=6, table=table);
+angle=65;
 
 module Arm() {
-    rotate_extrude(angle=angle, start=90-angle) right(30) tube2d(ir=20,wall=6,h=30);
-    zrot(90-angle) fwd(50) right(30) TeeTube(thread_up="G1/2", thread_up_turns=2.75, thread_end="G1 1/2");
+    tee_length=1/2 * inch + 12;
+    rotate_extrude(angle=angle, start=90-angle) right(bend_radius) tube2d(ir=20,wall=6,h=30);
+    x_pos = bend_radius * sin(angle);
+    y_pos = bend_radius * cos(angle);
+    translate([x_pos, y_pos]) zrot(90 - angle) fwd(tee_length/2) TeeTube(length=tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2);
 }
 
 
-module Snorkle()  {
-    snorkle_wall_thickness=1.2;
+module Snorkel()  {
+    snorkel_wall_thickness=1.2;
     tube_od=18.1;
     grip_od=24;
     
@@ -30,18 +33,18 @@ module Snorkle()  {
                 up(39) cylinder(5, r=grip_od/2, $fn=6);
             }
             up(20) bolt("G1/2", turns=10);
-            up(40 + 6 + 10) tube(od=18.1, l=60, wall=snorkle_wall_thickness);
+            up(40 + 6 + 10) tube(od=18.1, l=60, wall=snorkel_wall_thickness);
             up(20) difference() {
-                tube(od=18.1, l=6 + 50, wall=snorkle_wall_thickness);
+                tube(od=18.1, l=6 + 50, wall=snorkel_wall_thickness);
                 down(30) xrot(45) cube([20, 20, 60], center=true);
             }
         }
-        down(50) cylinder(200, d=tube_od - snorkle_wall_thickness * 2);
+        down(50) cylinder(200, d=tube_od - snorkel_wall_thickness * 2);
     }
 }
 
 module Plug()  {
-    snorkle_wall_thickness=1.2;
+    snorkel_wall_thickness=1.2;
     tube_od=18.1;
     grip_od=24;
     union() {
@@ -50,7 +53,7 @@ module Plug()  {
         }
 }
 
-module Constrictor() {
+module Nozzle() {
     difference() {
         union() {
             xrot(90) bolt("G1 1/2", turns=4);
@@ -64,8 +67,8 @@ module Constrictor() {
 
 Arm();
 
-left(100) Snorkle();
+left(100) Snorkel();
 
 left(100) fwd(50) Plug();
 
-left(100) fwd(150) Constrictor();
+left(100) fwd(150) Nozzle();

@@ -6,6 +6,7 @@ include <BOSL2/std.scad>;
 use <BOSL2/shapes3d.scad>;
 use <BOSL2/transforms.scad>;
 use <threadlib/threadlib.scad>;
+include <threadlib/THREAD_TABLE.scad>
 include <MCAD/units.scad>
 include <helpers.scad>
 
@@ -33,20 +34,19 @@ module tube2d(
     ifn, rounding_fn, circum=false);
 };
 
-module TeeTube(ir=20,wall=6, length=100, thread_up_turns=4, thread_up=undef, thread_end=undef) {
+module TeeTube(ir=20, wall=6, up_wall=3, length=100, thread_up_turns=10, thread_up, thread_end=undef) {
+    up_specs = thread_specs(str(thread_up, "-int"));
+    up_r = up_specs[2] / 2;
+    echo("up_specs", up_specs);
     difference() {
         union() {
             xrot(90) tube(ir=ir, wall=wall, h=length);
-            up(length/8) tube(ir=ir, wall=wall, h=length/4);
+            cylinder(r=up_r + up_wall, h=ir + wall);
         };
         xrot(90) cylinder(h=length, r=ir, center=true);
-        up(length / 4) cylinder(r=ir, h=length/2, center=true);
+        thread_d_outer = (up_r + up_wall) * 2;
+        up(ir - wall) tap(thread_up, turns=thread_up_turns);
     };
-
-    if (!is_undef(thread_up)) {
-        thread_d_outer = (ir + wall) * 2;
-        up(thread_d_outer/2) yrot(180) nut(thread_up, turns=thread_up_turns, Douter=thread_d_outer);
-    }
 
     if (!is_undef(thread_end)) {
         thread_d_outer = (ir + wall) * 2;
