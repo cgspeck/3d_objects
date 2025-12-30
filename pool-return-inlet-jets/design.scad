@@ -14,7 +14,7 @@ table = [
 bend_radius=30;
 angle=65;
 
-module Arm() {
+module Elbow() {
     back(bend_radius) yrot(270) nut("UNF-2", turns=4, Douter=62, nut_sides=6, table=table);
     tee_length=1/2 * inch + 12;
     rotate_extrude(angle=angle, start=90-angle) right(bend_radius) tube2d(ir=20,wall=6,h=30);
@@ -71,10 +71,10 @@ module Nozzle() {
     }
 }
 
-!Arm();
+yrot(90) zrot(angle) Elbow();
 
-left(100) Snorkel();
+up(136) left(100) xrot(180) Snorkel();
 
 left(100) fwd(50) Plug();
 
-left(100) fwd(150) Nozzle();
+up(35) left(100) fwd(150) xrot(90) Nozzle();

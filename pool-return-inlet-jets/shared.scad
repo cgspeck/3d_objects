@@ -53,11 +53,11 @@ module TeeTube(ir=20, wall=6, up_wall=3, length=100, thread_up_turns=10, thread_
         end_r = end_specs[2] / 2;
         r_diff = abs(ir - end_r);
         echo("r_diff", r_diff);
-        fwd(length/2 - $slop) xrot(90) difference() {
+        fwd(length/2 - epsilon) xrot(90) difference() {
             cylinder(r=ir+wall, h=r_diff);
             cylinder(d1=ir * 2, d2=end_r * 2, h=r_diff);
         };
         thread_d_outer = (ir + wall) * 2;
-        fwd(length/2 + r_diff - $slop) xrot(90) nut(thread_end, turns=4, Douter=thread_d_outer);
+        fwd(length/2 + r_diff - epsilon) xrot(90) nut(thread_end, turns=4, Douter=thread_d_outer);
     }
 };
