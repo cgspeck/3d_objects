@@ -4,15 +4,18 @@ use <BOSL2/shapes3d.scad>;
 use <BOSL2/transforms.scad>;
 use <threadlib/threadlib.scad>;
 
-// think this is possibly/probably a UNF 2"
-measured_1_int_major_dim=50 + 0.751;
-table = [["measured-1-int", [2.11667, -measured_1_int_major_dim / 2 - 0.00915, measured_1_int_major_dim , [[0, 0.9260], [0, -0.9260], [1.1457, -0.2646], [1.1457, 0.2646]]]]];
+// think this is a UNF 2"
+as_measured_1_int_major_dim=50 + 0.751;
+table = [
+    ["UNF-2-int", [2.11667, -25.45029836, 50.8823018 , [[0, 0.9260], [0, -0.9260], [1.1457, -0.2646], [1.1457, 0.2646]]]],
+    ["measured-1-int", [2.11667, -as_measured_1_int_major_dim / 2 - 0.00915, as_measured_1_int_major_dim , [[0, 0.9260], [0, -0.9260], [1.1457, -0.2646], [1.1457, 0.2646]]]]
+];
 
 bend_radius=30;
 angle=65;
 
 module Arm() {
-    back(bend_radius) yrot(270) nut("measured-1", turns=4, Douter=62, nut_sides=6, table=table);
+    back(bend_radius) yrot(270) nut("UNF-2", turns=4, Douter=62, nut_sides=6, table=table);
     tee_length=1/2 * inch + 12;
     rotate_extrude(angle=angle, start=90-angle) right(bend_radius) tube2d(ir=20,wall=6,h=30);
     x_pos = bend_radius * sin(angle);
@@ -68,9 +71,9 @@ module Nozzle() {
     }
 }
 
-Arm();
+!Arm();
 
-!left(100) Snorkel();
+left(100) Snorkel();
 
 left(100) fwd(50) Plug();
 

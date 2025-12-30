@@ -27,6 +27,12 @@ Unified National Course 2"
 "6-UN-2-ext"
 - thread pitch too large
 
+Turns out it's a 2" UNF, which sadly doesn't exist in threadlib, but can be added with this line:
+
+```javascript
+["UNF-2-int", [2.11667, -25.45029836, 50.8823018 , [[0, 0.9260], [0, -0.9260], [1.1457, -0.2646], [1.1457, 0.2646]]]],
+```
+
 
 ## References / Sources / Licenses
 
