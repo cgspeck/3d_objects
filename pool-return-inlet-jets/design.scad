@@ -57,7 +57,10 @@ module Nozzle() {
         union() {
             xrot(90) bolt("G1 1/2", turns=4);
             fwd(12) xrot(90) cylinder(6, r=20+6, $fn=6, center=true);
-            fwd(25 - epsilon) xrot(270) cylinder(20, r=20+6, 33.6 / 2, center=true);
+            hull() {
+                fwd(12) xrot(90) cylinder(6, r=20+6, $fn=6, center=true);
+                fwd(25 + 10 - epsilon) xrot(270) cylinder(epsilon, r=33.6 / 2, center=true);
+            }
         }
         fwd(25 - epsilon) xrot(270) cylinder(20 + epsilon * 2, r=20, 27 / 2, center=true);
         fwd(5) xrot(90) cylinder(20, r=20, center=true);
@@ -66,8 +69,8 @@ module Nozzle() {
 
 Arm();
 
-left(100) Snorkel();
+!left(100) Snorkel();
 
 left(100) fwd(50) Plug();
 
-!left(100) fwd(150) Nozzle();
+left(100) fwd(150) Nozzle();
