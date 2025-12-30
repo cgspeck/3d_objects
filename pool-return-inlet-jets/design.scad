@@ -21,11 +21,9 @@ module Arm() {
 }
 
 
-module Snorkel()  {
-    snorkel_wall_thickness=1.2;
+module Snorkel(snorkel_wall_thickness=1.2, upper_tube_len=110)  {
     tube_od=18.1;
     grip_od=24;
-    tube_len=60 + 50;
     
     difference() {
         union() {
@@ -34,7 +32,7 @@ module Snorkel()  {
                 up(39) cylinder(5, r=grip_od/2, $fn=6);
             }
             up(20) bolt("G1/2", turns=10);
-            up(26 + tube_len / 2) tube(od=18.1, l=tube_len, wall=snorkel_wall_thickness);
+            up(26 + upper_tube_len / 2) tube(od=18.1, l=upper_tube_len, wall=snorkel_wall_thickness);
             up(20) difference() {
                 tube(od=18.1, l=6 + 50, wall=snorkel_wall_thickness);
                 down(30) xrot(45) cube([20, 20, 60], center=true);
@@ -68,8 +66,8 @@ module Nozzle() {
 
 Arm();
 
-!left(100) Snorkel();
+left(100) Snorkel();
 
 left(100) fwd(50) Plug();
 
-left(100) fwd(150) Nozzle();
+!left(100) fwd(150) Nozzle();
