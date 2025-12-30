@@ -38,6 +38,7 @@ module Snorkel(snorkel_wall_thickness=1.2, upper_tube_len=110)  {
                 down(30) xrot(45) cube([20, 20, 60], center=true);
             }
         }
+        left(1.9) up(36.5) fwd(grip_od/2 - snorkel_wall_thickness * 1.8) xrot(90) text3d("*", h=snorkel_wall_thickness, size=7);
         down(50) cylinder(200, d=tube_od - snorkel_wall_thickness * 2);
     }
 }
