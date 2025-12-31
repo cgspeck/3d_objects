@@ -23,6 +23,37 @@ module Elbow() {
     translate([x_pos, y_pos]) zrot(90 - angle) fwd(tee_length/2) TeeTube(length=tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2);
 }
 
+module Compact() {
+    yrot(270) nut("UNF-2", turns=4, Douter=62, nut_sides=6, table=table);
+    tee_length=1/2 * inch + 12;
+    translate([-epsilon, 0]) zrot(90) fwd(tee_length/2) TeeTube(length=tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2);
+}
+
+module AngledNozzle(degree, tube_id=40, tube_wall=6, outlet_diameter=27, outlet_wall=3.3, hex_end=true, fat_hex=false) {
+    thread_y_origin=-1.1544;
+    outlet_y_origin=15;
+    diameter_diff=tube_id - outlet_diameter;
+    tube_od=tube_id + tube_wall * 2;
+    angled_nozzle_bend_radius=90-angle;
+    echo("diameter_diff", diameter_diff);
+    assert(diameter_diff < outlet_y_origin * 2, "diameter diff exceeds length of straight part");
+    hex_segments = hex_end ? 6 : 360;
+    // Re-calculate radius inside module based on input parameter
+    hexagon_flat_radius = hex_end ? 
+        fat_hex ? (tube_od / 2) / cos(30) : tube_od / 2
+        : tube_od / 2;
+
+    difference() {
+        union() {
+            xrot(90) bolt("G1 1/2", turns=4);
+            fwd(12) xrot(90) cylinder(6, r=hexagon_flat_radius, $fn=hex_segments, center=true);
+            xrot(90) cylinder(outlet_y_origin, r=20+epsilon);
+        }
+        xrot(90) cylinder(outlet_y_origin, r=outlet_diameter / 2, tube_id / 2);
+        back(-thread_y_origin + epsilon) xrot(90) cylinder(-thread_y_origin + 2 * epsilon, r=tube_id / 2);
+    }
+    fwd(outlet_y_origin-epsilon) left(angled_nozzle_bend_radius) zrot(270) rotate_extrude(angle=degree, start=90-degree) right(angled_nozzle_bend_radius) tube2d(ir=outlet_diameter / 2,wall=outlet_wall,h=30);
+}
 
 module Snorkel(snorkel_wall_thickness=1.2, upper_tube_len=110)  {
     tube_od=18.1;
@@ -71,10 +102,14 @@ module Nozzle() {
     }
 }
 
-yrot(90) zrot(angle) Elbow();
+// yrot(90) zrot(angle) Elbow();
 
-up(136) left(100) xrot(180) Snorkel();
+// up(136) left(100) xrot(180) Snorkel();
 
-left(100) fwd(50) Plug();
+// left(100) fwd(50) Plug();
 
-up(35) left(100) fwd(150) xrot(90) Nozzle();
+// up(35) left(100) fwd(150) xrot(90) Nozzle();
+
+right(100) Compact();
+
+right(100) fwd(100) AngledNozzle(65);
