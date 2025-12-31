@@ -105,7 +105,7 @@ module Nozzle() {
 
 yrot(90) zrot(angle) Elbow();
 
-up(136) left(100) xrot(180) Snorkel();
+up(136) left(100) xrot(180) Snorkel(snorkel_wall_thickness=1.67);
 
 left(100) fwd(50) Plug();
 
