@@ -25,8 +25,9 @@ module Elbow() {
 
 module Compact() {
     yrot(270) nut("UNF-2", turns=4, Douter=62, nut_sides=6, table=table);
+    leadin_ir=table[0][1][2] / 2;
     tee_length=1/2 * inch + 12;
-    translate([-epsilon, 0]) zrot(90) fwd(tee_length/2) TeeTube(length=tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2);
+    translate([-epsilon, 0]) zrot(90) fwd(tee_length/2) TeeTube(length=tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2, leadin_ir=leadin_ir);
 }
 
 module AngledNozzle(degree, tube_id=40, tube_wall=6, outlet_diameter=27, outlet_wall=3.3, hex_end=true, fat_hex=false) {
@@ -102,14 +103,15 @@ module Nozzle() {
     }
 }
 
-// yrot(90) zrot(angle) Elbow();
+yrot(90) zrot(angle) Elbow();
 
-// up(136) left(100) xrot(180) Snorkel();
+up(136) left(100) xrot(180) Snorkel();
 
-// left(100) fwd(50) Plug();
+left(100) fwd(50) Plug();
 
-// up(35) left(100) fwd(150) xrot(90) Nozzle();
+up(35) left(100) fwd(150) xrot(90) Nozzle();
 
-right(100) Compact();
+right(100) yrot(270) Compact();
+
 
 right(100) fwd(100) AngledNozzle(65);

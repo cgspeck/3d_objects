@@ -34,30 +34,46 @@ module tube2d(
     ifn, rounding_fn, circum=false);
 };
 
-module TeeTube(ir=20, wall=6, up_wall=3, length=100, thread_up_turns=10, thread_up, thread_end=undef) {
+module TeeTube(ir=20, wall=6, up_wall=3, length=100, thread_up_turns=10, thread_up, thread_end=undef, leadin_ir=undef) {
     up_specs = thread_specs(str(thread_up, "-int"));
     up_r = up_specs[2] / 2;
     echo("up_specs", up_specs);
-    difference() {
-        union() {
-            xrot(90) tube(ir=ir, wall=wall, h=length);
-            cylinder(r=up_r + up_wall, h=ir + wall);
-        };
-        xrot(90) cylinder(h=length, r=ir, center=true);
-        thread_d_outer = (up_r + up_wall) * 2;
-        up(ir - wall) tap(thread_up, turns=thread_up_turns);
-    };
+    echo("leadin_ir", leadin_ir);
+    leadin_r_diff = is_undef(leadin_ir) ? 0 : abs(leadin_ir - ir);
+    x_shift = is_undef(leadin_ir) ? 0 : leadin_r_diff - epsilon;
+    echo("x_shift", x_shift);
 
-    if (!is_undef(thread_end)) {
-        end_specs = thread_specs(str(thread_end, "-int"));
-        end_r = end_specs[2] / 2;
-        r_diff = abs(ir - end_r);
-        echo("r_diff", r_diff);
-        fwd(length/2 - epsilon) xrot(90) difference() {
-            cylinder(r=ir+wall, h=r_diff);
-            cylinder(d1=ir * 2, d2=end_r * 2, h=r_diff);
+    fwd(x_shift) {
+        difference() {
+            union() {
+                xrot(90) tube(ir=ir, wall=wall, h=length);
+                cylinder(r=up_r + up_wall, h=ir + wall);
+            };
+            xrot(90) cylinder(h=length, r=ir, center=true);
+            thread_d_outer = (up_r + up_wall) * 2;
+            up(ir - wall) tap(thread_up, turns=thread_up_turns);
         };
-        thread_d_outer = (ir + wall) * 2;
-        fwd(length/2 + r_diff - epsilon) xrot(90) nut(thread_end, turns=4, Douter=thread_d_outer);
-    }
+
+        if (!is_undef(thread_end)) {
+            end_specs = thread_specs(str(thread_end, "-int"));
+            end_r = end_specs[2] / 2;
+            r_diff = abs(ir - end_r);
+            echo("r_diff", r_diff);
+            fwd(length/2 - epsilon) xrot(90) difference() {
+                cylinder(r=ir+wall, h=r_diff);
+                cylinder(d1=ir * 2, d2=end_r * 2, h=r_diff);
+            };
+            thread_d_outer = (ir + wall) * 2;
+            fwd(length/2 + r_diff - epsilon) xrot(90) nut(thread_end, turns=4, Douter=thread_d_outer);
+        }
+
+        if (!is_undef(leadin_ir)) {
+            back(length / 2 + leadin_r_diff) {
+                difference() {
+                    xrot(90) cylinder(leadin_r_diff, r=ir + wall);
+                    xrot(90) cylinder(d1=leadin_ir * 2, d2=ir * 2, h=leadin_r_diff);
+                }
+            }
+        }
+    };
 };
