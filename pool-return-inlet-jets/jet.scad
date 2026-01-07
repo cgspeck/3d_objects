@@ -14,34 +14,46 @@ table = [
 bend_radius=30;
 angle=65;
 
-module Jet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diameter=undef, nozzle_dist=undef, nozzle_gap=undef) {
+module Jet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diameter=undef,
+    nozzle_dist=undef, nozzle_gap=undef, inlet_dist=undef, with_inlet=true, inlet_mating_tube=false, inlet_mating_tube_clearance=clearance_tight) {
     _torus_minor_diameter = is_undef(torus_minor_diameter) ? in_diameter / 2 : torus_minor_diameter;
     _torus_major_diameter = (out_diameter + _torus_minor_diameter) + wall_thickness * 2;
     _nozzle_dist = is_undef(nozzle_dist) ? (in_diameter - out_diameter) * 6 : nozzle_dist;
     _nozzle_gap = is_undef(nozzle_gap) ? out_diameter : nozzle_gap;
     _inner_tube_diameter = out_diameter - wall_thickness * 2;
+    _inlet_dist = is_undef(inlet_dist) ? _torus_major_diameter/2 + _torus_minor_diameter / 2 + 20 : inlet_dist;
     echo("out_diameter", out_diameter);
     echo("_inner_tube_diameter", _inner_tube_diameter)
     echo("_nozzle_dist", _nozzle_dist);
     echo("_torus_minor_diameter", _torus_minor_diameter);
     echo("_torus_major_diameter", _torus_major_diameter);
+    inlet_t_specs = thread_specs("G1 1/2-ext");
+    inlet_t_rad = inlet_t_specs[2] / 2;
+    inlet_t_up_dist = inlet_t_specs[3][2][0];
+    inlet_t_total_up = inlet_t_up_dist + in_diameter/2 - _torus_minor_diameter / 2 + wall_thickness / 2;
     difference() {
         union() {
-            hull() {
-                down(_torus_minor_diameter / 2 + wall_thickness) cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter / 2 + wall_thickness, $fn=6);
-                cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter, $fn=6);
-                up(_nozzle_dist) cylinder(epsilon, r=out_diameter / 2 + wall_thickness);
-            };
+            difference() {
+                hull() {
+                    down(_torus_minor_diameter / 2 + wall_thickness) cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter / 2 + wall_thickness, $fn=6);
+                    cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter, $fn=6);
+                    up(_nozzle_dist) cylinder(epsilon, r=out_diameter / 2 + wall_thickness);
+                };
 
-            t_specs = thread_specs("G1 1/2-ext");
-            t_up_dist = t_specs[3][2][0];
-            t_total_up = t_up_dist + in_diameter/2 - _torus_minor_diameter / 2 + wall_thickness / 2;
-            hull() {
-                up(t_total_up - t_up_dist / 2) xrot(270) cylinder(epsilon, r=out_diameter/2 + wall_thickness);
-                back(_torus_major_diameter/2 + _torus_minor_diameter / 2 + 10) up(t_total_up - t_up_dist / 2) xrot(270) cylinder(epsilon, r=out_diameter/2 + wall_thickness);
+                if (inlet_mating_tube) {
+                    back(_torus_major_diameter/2) up(_torus_minor_diameter/2 + wall_thickness) xrot(270) cylinder(100, r=out_diameter/2 + wall_thickness + inlet_mating_tube_clearance);
+                }
             }
-            back(_torus_major_diameter/2 + _torus_minor_diameter / 2 + 10) up(t_total_up) xrot(270) bolt("G1 1/2", turns=4);
 
+
+            if (with_inlet) {
+                hull() {
+                    up(inlet_t_total_up - inlet_t_up_dist / 2) xrot(270) cylinder(epsilon, r=inlet_t_rad);
+                    back(_inlet_dist - 10) up(inlet_t_total_up) xrot(270) cylinder(epsilon, r=inlet_t_rad, $fn=6);
+                }
+                back(_inlet_dist - 10) up(inlet_t_total_up) xrot(270) cylinder(10, r=inlet_t_rad, $fn=6);
+                back(_inlet_dist) up(inlet_t_total_up) xrot(270) bolt("G1 1/2", turns=4);
+            }
         }
 
 
@@ -58,5 +70,22 @@ module Jet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diam
     }
 }
 
-// left_half(s=200) Jet();
-Jet();
+module Inlet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diameter=undef,
+nozzle_dist=undef, nozzle_gap=undef, inlet_dist=undef, inlet_mating_tube=true, inlet_mating_tube_clearance=clearance_tight) {
+    difference() {
+        Jet(wall_thickness=wall_thickness, in_diameter=in_diameter, out_diameter=out_diameter, torus_minor_diameter=torus_minor_diameter, nozzle_dist=nozzle_dist, nozzle_gap=nozzle_gap, inlet_dist=inlet_dist, with_inlet=true, inlet_mating_tube=true, inlet_mating_tube_clearance=clearance_tight);
+        Jet(wall_thickness=wall_thickness, in_diameter=in_diameter, out_diameter=out_diameter, torus_minor_diameter=torus_minor_diameter, nozzle_dist=nozzle_dist, nozzle_gap=nozzle_gap, inlet_dist=inlet_dist, with_inlet=false, inlet_mating_tube=true, inlet_mating_tube_clearance=0);
+    }
+
+    if (inlet_mating_tube) {
+
+    }
+}
+
+// left_half(s=200) Jet(with_inlet=false, inlet_mating_tube=true);
+
+// left_half(s=400) back(60) Inlet();
+
+Jet(with_inlet=false, inlet_mating_tube=true);
+
+back(60) Inlet();
