@@ -13,6 +13,7 @@ table = [
 
 bend_radius=30;
 angle=65;
+compact_tee_length=1/2 * inch + 12;
 
 module Elbow() {
     back(bend_radius) yrot(270) nut("UNF-2", turns=4, Douter=62, nut_sides=6, table=table);
@@ -26,8 +27,7 @@ module Elbow() {
 module Compact() {
     yrot(270) nut("UNF-2", turns=4, Douter=62, nut_sides=6, table=table);
     leadin_ir=table[0][1][2] / 2;
-    tee_length=1/2 * inch + 12;
-    translate([-epsilon, 0]) zrot(90) fwd(tee_length/2) TeeTube(length=tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2, leadin_ir=leadin_ir);
+    translate([-epsilon, 0]) zrot(90) fwd(compact_tee_length/2) TeeTube(length=compact_tee_length, thread_up="G1/2", thread_end="G1 1/2", up_wall=1.2, leadin_ir=leadin_ir);
 }
 
 module AngledNozzle(degree, tube_id=40, tube_wall=6, outlet_diameter=27, outlet_wall=3.3, hex_end=true, fat_hex=false) {
@@ -56,8 +56,9 @@ module AngledNozzle(degree, tube_id=40, tube_wall=6, outlet_diameter=27, outlet_
     fwd(outlet_y_origin-epsilon) left(angled_nozzle_bend_radius) zrot(270) rotate_extrude(angle=degree, start=90-degree) right(angled_nozzle_bend_radius) tube2d(ir=outlet_diameter / 2,wall=outlet_wall,h=30);
 }
 
-module Snorkel(snorkel_wall_thickness=1.2, upper_tube_len=110)  {
+module Snorkel(snorkel_wall_thickness=1.2, upper_tube_len=110, upper_guard_z=0)  {
     tube_od=18.1;
+    tube_id=tube_od - snorkel_wall_thickness * 2;
     grip_od=24;
     
     difference() {
@@ -73,8 +74,36 @@ module Snorkel(snorkel_wall_thickness=1.2, upper_tube_len=110)  {
                 down(30) xrot(45) cube([20, 20, 60], center=true);
             }
         }
-        left(1.9) up(36.5) fwd(grip_od/2 - snorkel_wall_thickness * 1.8) xrot(90) text3d("*", h=snorkel_wall_thickness, size=7);
+        left(1.9) up(36.5) fwd(grip_od/2 - snorkel_wall_thickness) xrot(90) text3d("*", h=snorkel_wall_thickness, size=7);
         down(50) cylinder(200, d=tube_od - snorkel_wall_thickness * 2);
+    }
+
+    cutout_segments=16;
+    cutout_segment_width=2.4;
+    cutout_segment_angle=360/cutout_segments;
+    if (upper_guard_z > 0) {
+        outer_guard_height = upper_guard_z;
+        inner_guard_height = upper_guard_z - snorkel_wall_thickness * 2;
+        guard_ir = compact_tee_length / 2 - snorkel_wall_thickness;
+        guard_id = guard_ir * 2;
+        guard_or = compact_tee_length / 2;
+        guard_od = guard_or * 2;
+        inner_cone_height = abs(guard_id - tube_id) / 2;
+        difference() {
+            up(26 + upper_tube_len) cylinder(outer_guard_height, guard_or, guard_or);
+            // inner cone to remove need for supports
+            up(26 + upper_tube_len) cylinder(inner_cone_height, r1=tube_id/2, r2=guard_ir);
+            up(26 + upper_tube_len + inner_cone_height) cylinder(outer_guard_height, tube_id / 2 - snorkel_wall_thickness, tube_id / 2 - snorkel_wall_thickness);
+            up(26 + upper_tube_len + inner_cone_height) {
+                cylinder(inner_guard_height - inner_cone_height, guard_ir, guard_ir);
+                up(inner_guard_height / 2) {
+                    for (i=[1:cutout_segments]) {
+                        down(inner_cone_height / 2) zrot(i * cutout_segment_angle) cube([compact_tee_length + epsilon * 2, snorkel_wall_thickness, inner_guard_height - inner_cone_height], true);
+                        up(inner_guard_height / 2) zrot(i * cutout_segment_angle) right(guard_or) cube([guard_ir, snorkel_wall_thickness, inner_guard_height], true);
+                    }               
+                }
+            }
+        }
     }
 }
 
@@ -88,13 +117,15 @@ module Plug()  {
         }
 }
 
-module Nozzle() {
+module Nozzle(fat_hex=false, tube_id=40, tube_wall=6) {
+    tube_od=tube_id + tube_wall * 2;
+    hex_rad = fat_hex ? (tube_od / 2) / cos(30) : tube_od / 2;
     difference() {
         union() {
             xrot(90) bolt("G1 1/2", turns=4);
-            fwd(12) xrot(90) cylinder(6, r=20+6, $fn=6, center=true);
+            fwd(12) xrot(90) cylinder(6, r=hex_rad, $fn=6, center=true);
             hull() {
-                fwd(12) xrot(90) cylinder(6, r=20+6, $fn=6, center=true);
+                fwd(12) xrot(90) cylinder(6, r=hex_rad, $fn=6, center=true);
                 fwd(25 + 10 - epsilon) xrot(270) cylinder(epsilon, r=33.6 / 2, center=true);
             }
         }
@@ -103,15 +134,20 @@ module Nozzle() {
     }
 }
 
-yrot(90) zrot(angle) Elbow();
+// yrot(90) zrot(angle) Elbow();
 
-up(136) left(100) xrot(180) Snorkel(snorkel_wall_thickness=1.67);
+// up(136) left(100) xrot(180) 
+!Snorkel(snorkel_wall_thickness=1.67, upper_guard_z=25 + 1.67 * 2);
 
 left(100) fwd(50) Plug();
 
-up(35) left(100) fwd(150) xrot(90) Nozzle();
+up(35) left(100) fwd(150) xrot(90) Nozzle(fat_hex=true);
 
 right(100) yrot(270) Compact();
 
 
-right(100) fwd(100) AngledNozzle(65);
+right(100) fwd(100) xrot(270) AngledNozzle(65, fat_hex=true);
+
+right(100) fwd(200) xrot(270) AngledNozzle(65, outlet_diameter=40, fat_hex=true);
+
+right(100) fwd(300) xrot(90) AngledNozzle(0);
