@@ -16,12 +16,12 @@ angle=65;
 
 module Jet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diameter=undef,
     nozzle_dist=undef, nozzle_gap=undef, inlet_dist=undef, with_inlet=true, inlet_mating_tube=false,
-    inlet_mating_tube_clearance=clearance_tight) {
+    inlet_mating_tube_clearance=clearance_tight, fat_mid_section=true) {
     _in_radius = in_diameter / 2;
     _torus_minor_diameter = is_undef(torus_minor_diameter) ? in_diameter / 2 : torus_minor_diameter;
     _torus_major_diameter = (out_diameter + _torus_minor_diameter) + wall_thickness * 2;
-    _nozzle_dist = is_undef(nozzle_dist) ? (in_diameter - out_diameter) * 7 : nozzle_dist;
-    _nozzle_gap = is_undef(nozzle_gap) ? out_diameter : nozzle_gap;
+    _nozzle_dist = is_undef(nozzle_dist) ? (in_diameter - out_diameter) * 8 : nozzle_dist;
+
     _inner_tube_diameter = out_diameter - wall_thickness * 2;
     _inlet_dist = is_undef(inlet_dist) ? _torus_major_diameter/2 + _torus_minor_diameter / 2 + 20 : inlet_dist;
     echo("out_diameter", out_diameter);
@@ -34,12 +34,20 @@ module Jet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diam
     inlet_t_rad_outer_hex = inlet_t_rad / cos(30);
     inlet_t_up_dist = inlet_t_specs[3][2][0];
     inlet_t_total_up = inlet_t_up_dist + in_diameter/2 - _torus_minor_diameter / 2 + wall_thickness / 2;
+    _fat_mid_up_dist = inlet_t_total_up + _in_radius;
+    _nozzle_gap = is_undef(nozzle_gap) ? 
+        fat_mid_section ?
+            _nozzle_dist - _fat_mid_up_dist - wall_thickness * 2: _nozzle_dist - out_diameter - wall_thickness * 2
+            : nozzle_gap;
     difference() {
         union() {
             difference() {
                 hull() {
                     down(_torus_minor_diameter / 2 + wall_thickness) cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter / 2 + wall_thickness, $fn=6);
                     cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter, $fn=6);
+                    if (fat_mid_section) {
+                        up(_fat_mid_up_dist) cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter, $fn=6);
+                    }
                     up(_nozzle_dist) cylinder(epsilon, r=out_diameter / 2 + wall_thickness);
                 };
 
@@ -63,6 +71,10 @@ module Jet(wall_thickness=1.4, in_diameter=40, out_diameter=30, torus_minor_diam
         difference() {
             hull() {
                 torus(r_maj=_torus_major_diameter / 2, r_min=_torus_minor_diameter / 2);
+
+                if (fat_mid_section) {
+                    up(_fat_mid_up_dist) cylinder(epsilon, r=_torus_major_diameter / 2 + _torus_minor_diameter / 2);
+                }
                 up(_nozzle_dist) cylinder(epsilon, r=out_diameter / 2);
             }
             down(_torus_minor_diameter / 2 + epsilon) cylinder((_nozzle_dist + _torus_minor_diameter / 2 + epsilon * 2), r=_inner_tube_diameter / 2 + wall_thickness);
@@ -83,10 +95,10 @@ nozzle_dist=undef, nozzle_gap=undef, inlet_dist=undef, inlet_mating_tube=true, i
 
 // left_half(s=200) Jet();
 
-left_half(s=200) Jet(with_inlet=false, inlet_mating_tube=true);
+// left_half(s=200) Jet(with_inlet=false, inlet_mating_tube=true);
 
-left_half(s=400) back(60) Inlet();
+// left_half(s=400) back(60) Inlet();
 
-// Jet(with_inlet=false, inlet_mating_tube=true);
+Jet(with_inlet=false, inlet_mating_tube=true);
 
-// back(60) Inlet();
+back(60) Inlet();
