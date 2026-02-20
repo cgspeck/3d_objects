@@ -24,6 +24,7 @@ internal_cone_height=10;
 external_cone_height=internal_cone_height + wall_thickness * 2;
 cone_bottom_od = pipe_od + wall_thickness * 6;
 cone_bottom_id = pipe_od + (wall_thickness + clearance_tight) * 2;
+base_od = cone_bottom_id - clearance_tight * 2;
 internal_clearance_d = pipe_od - internal_cone_height * 2;
 echo("internal_clearance_d", internal_clearance_d);
 
@@ -66,6 +67,10 @@ module Shield(is_top=false) {
     }
 }
 
+module RoofV2() {
+    Shield(is_top=true);
+}
+
 module _ziptie(id, wall_override) {
     _wall = is_undef(wall_override) ? zip_tie_thickness : wall_override;
     tube(zip_tie_width, wall=zip_tie_thickness, id=id);
@@ -74,14 +79,12 @@ module _ziptie(id, wall_override) {
 module Base() {
     zip_tie_height = 5.2;
     base_height = pipe_od / 2 + zip_tie_height + wall_thickness;
-    base_od = cone_bottom_od;
     wire_width = 4;
     wire_thickness = 1.4;
     wire_extra_thickness = 10;
     difference() {
         union() {
             cylinder_outer(base_height, base_od/2);
-            up(base_height - epsilon) cylinder_outer(wall_thickness + epsilon, cone_bottom_id/2);
         }
         left(base_od/2 + epsilon) yrot(90) cylinder_outer(base_od + epsilon * 2, pipe_od / 2 );
         cylinder_outer(base_height + epsilon + wall_thickness, internal_clearance_d / 2);
@@ -89,6 +92,7 @@ module Base() {
         up(wall_thickness) right(internal_clearance_d / 2 + zip_tie_thickness + wall_thickness) yrot(90) _ziptie(pipe_od + wall_thickness * 2);
         yrot(90) _ziptie(pipe_od);
         up(pipe_od / 2 - wire_extra_thickness)fwd(wire_width/2) left(base_od / 2 + epsilon) cube([base_od + epsilon * 2, wire_width, wire_thickness + wire_extra_thickness]);
+        left(base_od / 2) fwd(base_od / 2 + epsilon) cube([base_od, base_od + epsilon * 2, pipe_od / 4]);
     }
 }
 
@@ -102,4 +106,8 @@ fwd(100) {
 
 fwd(200) {
     Base();
+}
+
+!fwd(300) {
+    hull() RoofV2();
 }

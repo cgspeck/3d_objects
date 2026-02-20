@@ -136,18 +136,16 @@ module Nozzle(fat_hex=false, tube_id=40, tube_wall=6) {
 
 // yrot(90) zrot(angle) Elbow();
 
-// up(136) left(100) xrot(180) 
-!Snorkel(snorkel_wall_thickness=1.67, upper_guard_z=25 + 1.67 * 2);
+up(136) xrot(180) Snorkel(snorkel_wall_thickness=1.67, upper_guard_z=25 + 1.67 * 2);
 
-left(100) fwd(50) Plug();
+right(50) back(75) Plug();
 
-up(35) left(100) fwd(150) xrot(90) Nozzle(fat_hex=true);
+up(35) right(100) back(120) xrot(90) Nozzle(fat_hex=true);
 
 right(100) yrot(270) Compact();
 
+right(200) back(0) xrot(90) AngledNozzle(0);
 
-right(100) fwd(100) xrot(270) AngledNozzle(65, fat_hex=true);
+right(200) back(100) zrot(90) xrot(270) AngledNozzle(90);
 
-right(100) fwd(200) xrot(270) AngledNozzle(65, outlet_diameter=40, fat_hex=true);
-
-right(100) fwd(300) xrot(90) AngledNozzle(0);
+right(200) back(200) zrot(90) xrot(270) AngledNozzle(90, outlet_diameter=40);
