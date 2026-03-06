@@ -3,4 +3,5 @@
 *.gcode
 .DS_Store
 *.swp
-
+*.svg
+*.pdf
