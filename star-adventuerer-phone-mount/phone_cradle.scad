@@ -180,8 +180,7 @@ module SideRodHolder() {
   }
 }
 
-module HandNut() {
-  tex_size=3;
+module HandNut(tex_size) {
   difference() {
     cyl(
       h=hand_screw_nut_h,
@@ -200,7 +199,7 @@ module HandNut() {
   }
 }
 
-module _base_arm_mount() {
+module _base_arm_mount(z) {
   arm_plate_x=30;
   arm_plate_y=42;
   arm_plate_y_blocked=9;
@@ -209,7 +208,6 @@ module _base_arm_mount() {
 
   //inner cutout where the arm's plate will fit
   inner_cutout_x = arm_plate_x + 2 * clearance_loose;
-  // inner_cutout_y=arm_plate_y + arm_plate_y_slide_len + arm_plate_y_entry + 2 * clearance_loose;
   inner_cutout_y = clearance_loose + arm_plate_y_blocked + arm_slide_len + arm_slide_len + arm_plate_y_entry + clearance_loose;
 
   outer_coutout_x = inner_cutout_x + max(base_cnr_radius * 2, min_thickness);
@@ -219,18 +217,20 @@ module _base_arm_mount() {
     cuboid([
       outer_coutout_x,
       outer_cutout_y,
-      mount_arm_plate_z + min_thickness
+      z
     ],
       rounding=base_cnr_radius,
       except=[TOP, BOT]
     )
-    tag("remove") down(min_thickness) cuboid([
+    tag("remove") down(min_thickness / 2) cuboid([
       inner_cutout_x,
       inner_cutout_y,
-      mount_arm_plate_z
+      z - min_thickness
     ]);
-
-    tag("keep") down(min_thickness) up(arm_dovetail_height / 2)
+    echo("arm_dovetail_height", arm_dovetail_height);
+    tag("keep") 
+      up(min_thickness)
+      down(0.6) // no idea where this comes from
       back(inner_cutout_y / 2 - arm_slide_len / 2 - arm_plate_y_entry - clearance_loose)
       xrot(0) 
       yrot(180)
@@ -246,7 +246,7 @@ module _base_arm_mount() {
   }
 }
 
-module _base_phone_side_arms() {
+module _base_phone_side_arms(z) {
   phone_width_with_case=83;
   width_allowance=2;
   echo("clamp_y_max - clamp_y_min", clamp_y_max - clamp_y_min);
@@ -275,7 +275,7 @@ module _base_phone_side_arms() {
     cuboid([
       outer_x,
       outer_y,
-      base_phone_side_arms_z + min_thickness
+      z
     ],
       rounding=base_cnr_radius,
       except=[TOP, BOT]
@@ -303,7 +303,7 @@ module _base_phone_side_arms() {
 }
 
 
-module _base_phone_bottom_slot() {
+module _base_phone_bottom_slot(z) {
   inner_x=clamp_slide_width;
   inner_y=clamp_slide_len + clamp_slide_len + 2 + 2 * $slop;
 
@@ -315,7 +315,7 @@ module _base_phone_bottom_slot() {
     cuboid([
       outer_x,
       outer_y,
-      base_phone_side_arms_z + min_thickness
+      z
     ],
       rounding=base_cnr_radius,
       except=[TOP, BOT]
@@ -335,20 +335,27 @@ module _base_phone_bottom_slot() {
     );
   }
 }
-!_base_arm_mount();
-// !_base_phone_side_arms();
+
+_base_arm_mount_z_actual=arm_dovetail_height + min_thickness;
+_phone_cradle_arms_z_actual=base_phone_side_arms_z + min_thickness;
+base_arm_mount_z=max([_base_arm_mount_z_actual, _phone_cradle_arms_z_actual]);
+phone_cradle_arms_z=base_arm_mount_z;
+
+// !union() {
+//   _base_arm_mount(base_arm_mount_z);
+//   _base_phone_side_arms(phone_cradle_arms_z);
+// }
+
 // !_base_phone_bottom_slot();
 
 module CradleBase() {
-  // z_offset=base_phone_side_arms_z / 2 + mount_arm_plate_z / 2 + 1;
-
-  mount_arm_plate_z=6.39;
   base_phone_side_arms_z=clamp_dovetail_height + $slop;
 
   base_tran=[0, 0, -(
-    (mount_arm_plate_z + min_thickness) / 2 - (base_phone_side_arms_z + min_thickness) / 2
+    (base_arm_mount_z) / 2 - (phone_cradle_arms_z) / 2
   )];
-  top_z_offset=(mount_arm_plate_z - base_phone_side_arms_z) / 2;
+  echo("base_tran", base_tran);
+  top_z_offset=(abs(base_arm_mount_z - phone_cradle_arms_z)) / 2;
   arm_trans=[
     0,
     58,
@@ -367,7 +374,7 @@ module CradleBase() {
   l_bot_tran=bot_tran + [-l_r_x_dist / 2, 0, 0];
   r_bot_tran=bot_tran + [l_r_x_dist / 2, 0, 0];
 
-  central_cuboid_dim = [10,10, base_phone_side_arms_z + min_thickness];
+  central_cuboid_dim = [10,10, base_arm_mount_z];
   central_cuboid_trn = [0, 0, 0];
   arm_cuboid_trn = [0, 35, 0];
   echo("central_cuboid_dim", central_cuboid_dim);
@@ -376,41 +383,34 @@ module CradleBase() {
     difference() {
       union() {
         hull() {
-          translate(base_tran) _base_arm_mount();
+          translate(base_tran) _base_arm_mount(base_arm_mount_z);
         }
         hull() {
           translate(arm_cuboid_trn) cuboid(central_cuboid_dim);
-          translate(arm_trans)  _base_phone_side_arms();
+          translate(arm_trans)  _base_phone_side_arms(phone_cradle_arms_z);
         }
         hull() {
           translate(central_cuboid_trn) cuboid(central_cuboid_dim)
-          translate(l_bot_tran) _base_phone_bottom_slot();
+          translate(l_bot_tran) _base_phone_bottom_slot(phone_cradle_arms_z);
         }
         hull() {
           translate(central_cuboid_trn) cuboid(central_cuboid_dim)
-          translate(r_bot_tran) _base_phone_bottom_slot();
+          translate(r_bot_tran) _base_phone_bottom_slot(phone_cradle_arms_z);
         }
       }
-      // multiHull() {
-      //   // all base pieces
-      //   _base_arm_mount();
-      //   translate(arm_trans) _base_phone_side_arms();
-      //   translate(l_bot_tran) _base_phone_bottom_slot();
-      //   translate(r_bot_tran) _base_phone_bottom_slot();
-      // }
       union() {
         // all base pieces
-        hull() translate(base_tran) _base_arm_mount();
-        hull() translate(arm_trans)  _base_phone_side_arms();
-        hull() translate(l_bot_tran) _base_phone_bottom_slot();
-        hull() translate(r_bot_tran) _base_phone_bottom_slot();
+        hull() translate(base_tran) _base_arm_mount(base_arm_mount_z);
+        hull() translate(arm_trans)  _base_phone_side_arms(phone_cradle_arms_z);
+        hull() translate(l_bot_tran) _base_phone_bottom_slot(phone_cradle_arms_z);
+        hull() translate(r_bot_tran) _base_phone_bottom_slot(phone_cradle_arms_z);
       }
     }
     // all base pieces
-    translate(base_tran) _base_arm_mount();
-    translate(arm_trans) _base_phone_side_arms();
-    translate(l_bot_tran) _base_phone_bottom_slot();
-    translate(r_bot_tran) _base_phone_bottom_slot();
+    translate(base_tran) _base_arm_mount(base_arm_mount_z);
+    translate(arm_trans) _base_phone_side_arms(phone_cradle_arms_z);
+    translate(l_bot_tran) _base_phone_bottom_slot(phone_cradle_arms_z);
+    translate(r_bot_tran) _base_phone_bottom_slot(phone_cradle_arms_z);
   }
 }
 
@@ -418,6 +418,6 @@ xdistribute(spacing=100) {
   FixedBottomClamp();
   SideClampWithScrew();
   SideRodHolder();
-  HandNut();
-  !CradleBase();
+  HandNut(1);
+  CradleBase();
 }
