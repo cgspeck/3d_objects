@@ -1,9 +1,4 @@
 include <BOSL2/std.scad>;
-include <BOSL2/joiners.scad>
-include <BOSL2/walls.scad>
-use <BOSL2/shapes3d.scad>;
-use <BOSL2/transforms.scad>;
-
 
 fn=72*4;
 $fn=fn;
@@ -27,16 +22,10 @@ rounding=2;
 
 frame_dim=[chasis_dim_xy.x, chasis_dim_xy.y, 0] + frame_over_dim;
 chasis_dim=[chasis_dim_xy.x, chasis_dim_xy.y, frame_dim.z - screen_dim.z + epsilon];
-echo("chasis_dim", chasis_dim);
-echo("frame_dim", frame_dim);
 
 top_margin=(chasis_dim.y - screen_dim.y) - bottom_margin;
 side_margin=(chasis_dim.x - screen_dim.x) / 2;
-echo("top_margin", top_margin);
-echo("bottom_margin", bottom_margin);
-echo(frame_dim.x);
-echo(screen_dim.x);
-echo("X", (frame_dim.x - screen_dim.x) / 2);
+
 
 module Frame() {
 diff() {
