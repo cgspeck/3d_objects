@@ -15,7 +15,7 @@ min_thickness=2.4;
 $slop = clearance_tight;
 epsilon = 0.001;
 frame_thickness = 4;
-hole_dia = 3 + clearance_loose * 2;
+hole_dia = 3 + clearance_loose;
 chasis_dim_xy=[344.40 + clearance_loose * 4, 221.5];
 hole_rad = hole_dia / 2;
 hole_dist_from_top = 7.5;
@@ -81,38 +81,37 @@ diff() {
 }
 
 module BottomChannel() {
+    chan_len=300;
     up(screen_dim.z + 1.2 + epsilon) xrot(180) diff() {
-        cuboid([80, bottom_margin + 2.4 + clearance_tight * 2, screen_dim.z + 1.2], anchor=BOTTOM+FRONT+LEFT);
-        tag("remove") back(1.2) cuboid([80, bottom_margin + clearance_tight * 2, screen_dim.z], anchor=BOTTOM+FRONT+LEFT);
+        cuboid([chan_len, bottom_margin + 2.4 + clearance_tight * 2, screen_dim.z + 1.2], anchor=BOTTOM+FRONT+LEFT);
+        tag("remove") back(1.2) cuboid([chan_len, bottom_margin + clearance_tight * 2, screen_dim.z], anchor=BOTTOM+FRONT+LEFT);
     }
 }
 
 module TopChannel() {
-    intersection() {
-        Frame();
-        right(frame_dim.x/2 - 40)
-            back(frame_dim.y - 20 - (frame_over_dim.y - 1.2))
-            up(screen_dim.z - 1.2)
-            cube([80, 20, frame_dim.z]);
+    chan_len=80;
+    zrot(180) up(screen_dim.z + 1.2 + epsilon) xrot(180) diff() {
+        cuboid([chan_len, top_margin + 2.4 + clearance_tight * 2, frame_dim.z + 1.2], anchor=BOTTOM+FRONT+LEFT);
+        tag("remove") back(1.2) cuboid([chan_len, top_margin + clearance_tight * 2, frame_dim.z], anchor=BOTTOM+FRONT+LEFT);
+        tag("remove") back(0) cuboid([chan_len, 1.2, frame_dim.z - screen_dim.z], anchor=BOTTOM+FRONT+LEFT);
     }
 }
 
 
 
-ydistribute() {
-    xdistribute() {
-        BottomChannel();
-        TopChannel();
-    }
+ydistribute(150) {
+    right(frame_dim.x / 2 - 150) BottomChannel();
 
-    xdistribute(100) {
-        intersection() {
+    xdistribute(50) {
+        fwd(frame_dim.y/2) intersection() {
             cube([frame_dim.x / 2, frame_dim.y, frame_dim.z]);
             Frame();
         }
-        intersection() {
+        fwd(frame_dim.y/2) intersection() {
             right(frame_dim.x / 2) cube([frame_dim.x / 2, frame_dim.y, frame_dim.z]); 
             Frame();
         }
     }
+
+    right(frame_dim.x / 2 + 40) TopChannel();
 }
