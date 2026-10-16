@@ -80,8 +80,15 @@ module BottomChannel() {
 module TopChannel() {
     chan_len=80;
     zrot(180) up(screen_dim.z + 1.2 + epsilon) xrot(180) diff() {
-        cuboid([chan_len, top_margin + 2.4 + clearance_tight * 2, frame_dim.z + 1.2], anchor=BOTTOM+FRONT+LEFT);
-        tag("remove") back(1.2) cuboid([chan_len, top_margin + clearance_tight * 2, frame_dim.z], anchor=BOTTOM+FRONT+LEFT);
+        cuboid([
+            chan_len, 
+            top_margin + frame_over_dim.y + 2.4 + clearance_tight * 2, 
+            frame_dim.z + 1.2
+        ], anchor=BOTTOM+FRONT+LEFT);
+        tag("remove") back(1.2) cuboid([
+            chan_len, 
+            top_margin + frame_over_dim.y + clearance_tight * 2, 
+            frame_dim.z], anchor=BOTTOM+FRONT+LEFT);
         tag("remove") back(0) cuboid([chan_len, 1.2, frame_dim.z - screen_dim.z], anchor=BOTTOM+FRONT+LEFT);
     }
 }
